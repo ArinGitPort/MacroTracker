@@ -13,6 +13,9 @@
         android:theme="@style/Theme.MacroTracker"
         tools:targetApi="31">
         <activity
+            android:name=".addfoodmacros"
+            android:exported="false" />
+        <activity
             android:name=".loginpage"
             android:exported="true" />
         <activity
