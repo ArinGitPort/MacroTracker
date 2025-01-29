@@ -14,9 +14,9 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="337dp"
-        android:layout_height="586dp"
-        android:src="@drawable/mainlogo"
-        android:layout_gravity="center_horizontal" />
+        android:layout_height="441dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/mainlogo" />
 
     <!-- Button -->
     <Button
@@ -26,6 +26,8 @@
         android:text="Next"
         android:backgroundTint="@color/black"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp" />
+        android:layout_marginBottom="30dp"
+        android:alpha="0"/>
+
 
 </LinearLayout>

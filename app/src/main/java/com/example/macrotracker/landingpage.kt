@@ -22,4 +22,7 @@ class landingpage : AppCompatActivity() {
 		val adapter = FoodAdapter(foodItems)
 		recyclerView.adapter = adapter
 	}
+
+
+
 }

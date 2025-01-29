@@ -21,10 +21,26 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // Set up the next button
+        // Find the next button
         val nextButton = findViewById<Button>(R.id.nextButton)
+
+        // Apply fade-in pop-out animation with a delay
+        nextButton.alpha = 0f // Start invisible
+        nextButton.postDelayed({
+            nextButton.animate()
+                .alpha(1f)  // Fully visible
+                .scaleX(1.1f)  // Slight pop-out effect
+                .scaleY(1.1f)
+                .setDuration(2000) // Animation duration (800ms)
+                .withEndAction {
+                    // Return to normal size after pop-out
+                    nextButton.animate().scaleX(1f).scaleY(1f).setDuration(200)
+                }
+                .start()
+        }, 500) // Delay of 500ms before animation starts
+
+        // Set up button click listener
         nextButton.setOnClickListener {
-            // Intent to navigate to Figma_861
             val intent = Intent(this, loginpage::class.java)
             startActivity(intent)
         }
