@@ -13,8 +13,20 @@
         android:theme="@style/Theme.MacroTracker"
         tools:targetApi="31">
         <activity
+            android:name=".editmacros"
+            android:exported="true" />
+        <activity
+            android:name=".registerpage"
+            android:exported="true" />
+        <activity
+            android:name=".dailylogs"
+            android:exported="true" />
+        <activity
+            android:name=".addfoodmacros"
+            android:exported="true" />
+        <activity
             android:name=".loginpage"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -23,7 +35,11 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity> <!-- LandingPage activity -->
+        <activity
+            android:name=".landingpage"
+            android:exported="true"
+            android:theme="@style/Theme.MacroTracker" />
     </application>
 
 </manifest>
