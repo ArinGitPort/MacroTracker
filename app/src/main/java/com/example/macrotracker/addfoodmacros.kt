@@ -19,11 +19,6 @@ class addfoodmacros : AppCompatActivity() {
             insets
         }
 
-        val addButton = findViewById<Button>(R.id.addButton)
-        addButton.setOnClickListener{
-            val intent = Intent(this, addfoodmacros::class.java)
-            startActivity(intent)
-        }
 
 
     }

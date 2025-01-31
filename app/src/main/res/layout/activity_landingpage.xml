@@ -299,6 +299,8 @@
 					android:layout_width="59dp"
 					android:layout_height="51dp"
 					android:scaleType="fitXY"
+					android:clickable="true"
+					android:focusable="true"
 					android:src="@drawable/macrosicon" />
 
 				<!-- Spacer between icons -->
@@ -313,6 +315,8 @@
 					android:layout_width="52dp"
 					android:layout_height="51dp"
 					android:scaleType="fitXY"
+					android:clickable="true"
+					android:focusable="true"
 					android:src="@drawable/scanicon" />
 
 				<!-- Spacer between icons -->
@@ -323,10 +327,12 @@
 
 				<!-- Logs Icon -->
 				<ImageView
-					android:id="@+id/DailyLogsIconImage"
+					android:id="@+id/dailyLogsIconImage"
 					android:layout_width="59dp"
 					android:layout_height="51dp"
 					android:scaleType="fitXY"
+					android:clickable="true"
+					android:focusable="true"
 					android:src="@drawable/logsicon" />
 
 				<!-- Empty space on the right -->
