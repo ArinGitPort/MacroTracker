@@ -2,42 +2,53 @@ package com.example.macrotracker
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.macrotracker.databinding.ActivityLandingpageBinding
 
 class landingpage : AppCompatActivity() {
+	private lateinit var binding: ActivityLandingpageBinding
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		setContentView(R.layout.activity_landingpage)
 
-		// Initialize RecyclerView
-		val recyclerView = findViewById<RecyclerView>(R.id.mainFoodRecyclerView)
+		// ViewBinding
+		binding = ActivityLandingpageBinding.inflate(layoutInflater)
+		setContentView(binding.root)
 
-		// Set LayoutManager
-		recyclerView.layoutManager = LinearLayoutManager(this)
+		// Sample food list
+		val foodItems = listOf(
+			FoodItem("Apple", 95, 0, 25, 0),
+			FoodItem("Banana", 105, 1, 27, 0),
+			FoodItem("Carrot", 41, 1, 10, 0),
+			FoodItem("Eggs", 68, 6, 1, 5),
+			FoodItem("Fish", 140, 20, 0, 6),
+			FoodItem("Grapes", 62, 0, 16, 0)
+		)
 
-		// Set Adapter
-		val foodItems = listOf("Apple", "Banana", "Carrot", "Dates", "Eggs", "Fish", "Grapes")
-		val adapter = FoodAdapter(foodItems)
-		recyclerView.adapter = adapter
+		// Set up RecyclerView
+		binding.mainFoodRecyclerView.layoutManager = LinearLayoutManager(this)
+		binding.mainFoodRecyclerView.adapter = FoodAdapter(foodItems) { selectedFood ->
+			// Send selected food item to Daily Logs
+			val intent = Intent(this, dailylogs::class.java).apply {
+				putExtra("foodName", selectedFood.name)
+				putExtra("calories", selectedFood.calories)
+				putExtra("protein", selectedFood.protein)
+				putExtra("carbs", selectedFood.carbs)
+				putExtra("fats", selectedFood.fats)
+			}
+			startActivity(intent)
+		}
 
-		// Find ImageViews
-		val macros = findViewById<ImageView>(R.id.macrosIconImage)
-		val barcode = findViewById<ImageView>(R.id.barcodeScannerIconImage)
-		val dailyLogs = findViewById<ImageView>(R.id.dailyLogsIconImage)
-
-		// Set Click Listeners
-		macros.setOnClickListener {
+		// Set Click Listeners (Preserving all previous ones)
+		binding.macrosIconImage.setOnClickListener {
 			val intent = Intent(this, editmacros::class.java)
 			startActivity(intent)
 		}
 
 
 
-		dailyLogs.setOnClickListener {
+		binding.dailyLogsIconImage.setOnClickListener {
 			val intent = Intent(this, dailylogs::class.java)
 			startActivity(intent)
 		}
