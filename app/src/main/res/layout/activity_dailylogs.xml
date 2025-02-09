@@ -39,6 +39,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundcorner"
                     android:paddingVertical="12dp"
+                    android:backgroundTint="@color/black"
                     android:paddingHorizontal="20dp"
                     android:orientation="vertical"
                     android:gravity="center">
@@ -71,6 +72,7 @@
                     android:id="@+id/macrosOverviewContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/black"
                     android:background="@drawable/roundcorner"
                     android:paddingVertical="12dp"
                     android:paddingHorizontal="20dp"
@@ -85,13 +87,42 @@
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"/>
 
-                    <TextView
-                        android:id="@+id/macrosRemaining"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Carbs: 120g  Protein: 100g  Fat: 80g"
-                        android:textColor="#FFFFFF"
-                        android:textSize="12sp"/>
+                        android:orientation="horizontal"
+                        android:gravity="center">
+
+                        <!-- Carbs -->
+                        <TextView
+                            android:id="@+id/carbsRemaining"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Carbs: 120g"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginEnd="12dp"/>
+
+                        <!-- Protein -->
+                        <TextView
+                            android:id="@+id/proteinRemaining"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Protein: 100g"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginEnd="12dp"/>
+
+                        <!-- Fat -->
+                        <TextView
+                            android:id="@+id/fatRemaining"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fat: 80g"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
@@ -210,6 +241,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"
+                android:layout_gravity="center"
                 android:paddingHorizontal="12dp"/>
 
             <androidx.recyclerview.widget.RecyclerView

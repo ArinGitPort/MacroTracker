@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "103122886779",
+    "project_id": "authmacrotracker",
+    "storage_bucket": "authmacrotracker.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103122886779:android:934a6ecd49880be28fc2de",
+        "android_client_info": {
+          "package_name": "com.example.macrotracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHn1QLCWY8YKHJOp3m-I9c_SkFHD-tmGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
