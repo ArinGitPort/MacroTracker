@@ -139,16 +139,16 @@
                     android:layout_weight="1"/>
 
                 <EditText
-                    android:id="@+id/proteinValue"
+                    android:id="@+id/proteinInput"
                     android:layout_width="152dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundcornerblack"
+                    android:gravity="center"
+                    android:hint="0"
+                    android:inputType="number"
                     android:paddingVertical="10dp"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:hint="0"/>
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <!-- Carbs Section -->
@@ -187,7 +187,7 @@
                     android:layout_weight="1"/>
 
                 <EditText
-                    android:id="@+id/carbsValue"
+                    android:id="@+id/carbsInput"
                     android:layout_width="152dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundcornerblack"
@@ -235,16 +235,16 @@
                     android:layout_weight="1"/>
 
                 <EditText
-                    android:id="@+id/fatsValue"
+                    android:id="@+id/fatsInput"
                     android:layout_width="152dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundcornerblack"
+                    android:gravity="center"
+                    android:hint="0"
+                    android:inputType="number"
                     android:paddingVertical="10dp"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:hint="0"/>
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <!-- Save Button Container -->
