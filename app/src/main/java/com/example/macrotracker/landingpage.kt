@@ -15,7 +15,7 @@ class landingpage : AppCompatActivity() {
 	private lateinit var binding: ActivityLandingpageBinding
 	private val db = FirebaseFirestore.getInstance() // Firestore instance
 
-	// Keep a full list and a mutable filtered list
+	// Full list and mutable filtered list of food items
 	private val originalFoodItems = listOf(
 		FoodItem("Apple", 95, 0, 25, 0),
 		FoodItem("Banana", 105, 1, 27, 0),
@@ -38,18 +38,18 @@ class landingpage : AppCompatActivity() {
 
 		// Set up RecyclerView for food selection with the filtered list
 		binding.mainFoodRecyclerView.layoutManager = LinearLayoutManager(this)
-		val adapter = FoodAdapter(filteredFoodItems) { selectedFood, quantity ->
-			// Multiply nutritional values by quantity
+		val foodAdapter = FoodAdapter(filteredFoodItems) { selectedFood, multiplier ->
+			// Multiply nutritional values by multiplier before adding to Firestore
 			val modifiedFood = FoodItem(
 				selectedFood.name,
-				selectedFood.calories * quantity,
-				selectedFood.protein * quantity,
-				selectedFood.carbs * quantity,
-				selectedFood.fats * quantity
+				(selectedFood.calories * multiplier).toInt(),
+				(selectedFood.protein * multiplier).toInt(),
+				(selectedFood.carbs * multiplier).toInt(),
+				(selectedFood.fats * multiplier).toInt()
 			)
 			addFoodToFirestore(modifiedFood)
 		}
-		binding.mainFoodRecyclerView.adapter = adapter
+		binding.mainFoodRecyclerView.adapter = foodAdapter
 
 		// Set up search bar to filter food items
 		binding.searchBarInput.addTextChangedListener(object : TextWatcher {
@@ -70,7 +70,7 @@ class landingpage : AppCompatActivity() {
 					}
 					filteredFoodItems.addAll(filtered)
 				}
-				adapter.notifyDataSetChanged()
+				foodAdapter.notifyDataSetChanged()
 			}
 		})
 
@@ -85,26 +85,48 @@ class landingpage : AppCompatActivity() {
 	}
 
 	/**
-	 * Stores selected food in Firestore (if not already logged) and refreshes macro calculations.
+	 * Stores selected food in Firestore.
+	 * If a document with the same food name exists, it updates it by adding the nutritional values.
+	 * Otherwise, it creates a new document.
 	 */
 	private fun addFoodToFirestore(food: FoodItem) {
 		val foodRef = db.collection("daily_logs")
-		// Check if food is already logged to prevent duplicates
+		// Query for an existing document with the same food name
 		foodRef.whereEqualTo("name", food.name)
 			.get()
 			.addOnSuccessListener { documents ->
 				if (documents.isEmpty) {
+					// No existing entry: add new document
 					foodRef.add(food)
 						.addOnSuccessListener {
 							Toast.makeText(this, "${food.name} added to logs", Toast.LENGTH_SHORT).show()
-							// Refresh macros after adding food
 							fetchAndComputeRemainingMacros()
 						}
 						.addOnFailureListener {
 							Toast.makeText(this, "Failed to add food", Toast.LENGTH_SHORT).show()
 						}
 				} else {
-					Toast.makeText(this, "${food.name} is already logged", Toast.LENGTH_SHORT).show()
+					// If found, combine the food values
+					val doc = documents.documents[0]
+					val existingFood = doc.toObject(FoodItem::class.java)
+					if (existingFood != null) {
+						val combinedFood = FoodItem(
+							name = food.name,
+							calories = existingFood.calories + food.calories,
+							protein = existingFood.protein + food.protein,
+							carbs = existingFood.carbs + food.carbs,
+							fats = existingFood.fats + food.fats
+						)
+						// Update the existing document
+						foodRef.document(doc.id).set(combinedFood)
+							.addOnSuccessListener {
+								Toast.makeText(this, "${food.name} updated in logs", Toast.LENGTH_SHORT).show()
+								fetchAndComputeRemainingMacros()
+							}
+							.addOnFailureListener {
+								Toast.makeText(this, "Failed to update food", Toast.LENGTH_SHORT).show()
+							}
+					}
 				}
 			}
 			.addOnFailureListener {
@@ -117,13 +139,11 @@ class landingpage : AppCompatActivity() {
 	 * and updates the TextViews (calorieCount, proteinCount, carbsCount, fatCount).
 	 */
 	private fun fetchAndComputeRemainingMacros() {
-		// Fetch the macro goals from Firestore
 		db.collection("userMacros").document("macros").get()
 			.addOnSuccessListener { macroDoc ->
 				if (macroDoc.exists()) {
 					val goalMacros = macroDoc.toObject(Macros::class.java)
 					if (goalMacros != null) {
-						// Now fetch daily logs and sum their nutritional values
 						db.collection("daily_logs").get()
 							.addOnSuccessListener { logs ->
 								var sumCalories = 0
@@ -143,13 +163,11 @@ class landingpage : AppCompatActivity() {
 									}
 								}
 
-								// Compute remaining macros (goal minus consumed)
 								val remainingCalories = goalMacros.calories - sumCalories
 								val remainingProtein = goalMacros.protein - sumProtein
 								val remainingCarbs = goalMacros.carbs - sumCarbs
 								val remainingFats = goalMacros.fats - sumFats
 
-								// Update TextViews on the landing page
 								binding.calorieCount.text = remainingCalories.toString()
 								binding.proteinCount.text = remainingProtein.toString()
 								binding.carbsCount.text = remainingCarbs.toString()

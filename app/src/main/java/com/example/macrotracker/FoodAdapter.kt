@@ -1,19 +1,19 @@
 package com.example.macrotracker
 
 import android.text.InputType
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 
-// onAddClick now takes both the FoodItem and the quantity.
+// onAddClick now takes both the FoodItem and a Double multiplier.
 class FoodAdapter(
     private val foodList: List<FoodItem>,
-    private val onAddClick: (FoodItem, Int) -> Unit
+    private val onAddClick: (FoodItem, Double) -> Unit
 ) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
     class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -34,29 +34,48 @@ class FoodAdapter(
         val food = foodList[position]
         holder.foodName.text = food.name
 
-        // Update macros display for this food item.
+        // Display nutritional information
         holder.caloriesText.text = "Calories: ${food.calories}"
         holder.proteinText.text = "Protein: ${food.protein}g"
         holder.carbsText.text = "Carbs: ${food.carbs}g"
         holder.fatsText.text = "Fats: ${food.fats}g"
 
-        // When addButton is clicked, show an AlertDialog to ask for quantity.
+        // When the Add button is clicked, show a dialog for measurement type and value.
         holder.addButton.setOnClickListener {
             val context = holder.itemView.context
+            // Step 1: Let the user choose the measurement type.
+            val options = arrayOf("Servings", "Grams")
+            var selectedOption = 0 // default to Servings
             val builder = AlertDialog.Builder(context)
-            builder.setTitle("Enter Quantity")
-
-            // Create an EditText for quantity input.
-            val input = EditText(context)
-            input.inputType = InputType.TYPE_CLASS_NUMBER
-            builder.setView(input)
-
-            builder.setPositiveButton("OK") { dialog, _ ->
-                val quantityStr = input.text.toString()
-                // Default to 1 if quantity is not provided or invalid.
-                val quantity = quantityStr.toIntOrNull() ?: 1
-                onAddClick(food, quantity)
+            builder.setTitle("Choose Measurement")
+            builder.setSingleChoiceItems(options, 0) { _, which ->
+                selectedOption = which
+            }
+            builder.setPositiveButton("Next") { dialog, _ ->
                 dialog.dismiss()
+                // Step 2: Prompt for the numeric value.
+                val valueInput = EditText(context)
+                valueInput.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
+                val valueBuilder = AlertDialog.Builder(context)
+                valueBuilder.setTitle("Enter value (${options[selectedOption]})")
+                valueBuilder.setView(valueInput)
+                valueBuilder.setPositiveButton("OK") { valueDialog, _ ->
+                    val valueStr = valueInput.text.toString()
+                    // If Servings is selected, use the value directly.
+                    // If Grams is selected, assume the food's values represent 100g; multiplier = entered grams / 100.
+                    val multiplier = when (selectedOption) {
+                        0 -> valueStr.toDoubleOrNull() ?: 1.0
+                        1 -> (valueStr.toDoubleOrNull() ?: 100.0) / 100.0
+                        else -> 1.0
+                    }
+                    // Invoke the callback; duplicates are allowed.
+                    onAddClick(food, multiplier)
+                    valueDialog.dismiss()
+                }
+                valueBuilder.setNegativeButton("Cancel") { valueDialog, _ ->
+                    valueDialog.cancel()
+                }
+                valueBuilder.show()
             }
             builder.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()

@@ -140,12 +140,13 @@
 
                 <EditText
                     android:id="@+id/proteinInput"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
                     android:layout_width="152dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundcornerblack"
                     android:gravity="center"
                     android:hint="0"
-                    android:inputType="number"
                     android:paddingVertical="10dp"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
@@ -188,6 +189,7 @@
 
                 <EditText
                     android:id="@+id/carbsInput"
+                    android:imeOptions="actionDone"
                     android:layout_width="152dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundcornerblack"
@@ -236,6 +238,7 @@
 
                 <EditText
                     android:id="@+id/fatsInput"
+                    android:imeOptions="actionDone"
                     android:layout_width="152dp"
                     android:layout_height="wrap_content"
                     android:background="@drawable/roundcornerblack"

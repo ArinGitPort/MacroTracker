@@ -33,6 +33,7 @@
             android:backgroundTint="@color/black"
             android:textColor="#FFFFFF"
             android:elevation="2dp" />
+
     </LinearLayout>
 
     <!-- Bottom Row: Display Macros -->
