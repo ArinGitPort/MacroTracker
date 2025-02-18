@@ -33,20 +33,20 @@ class dailylogs : AppCompatActivity() {
 
         // Back Button Navigation
         binding.backButton.setOnClickListener {
-            val intent = Intent(this, landingpage::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, landingpage::class.java))
             finish()
         }
 
-        // Fetch Data from Firestore and update macros
-        fetchDailyLogs()
+        // Fetch data for both sections
+        fetchDailyLogs() // Updates daily macro breakdown
+        fetchAndComputeRemainingMacros() // Updates remaining macros
 
         // Receive new food data from Landing Page
         handleIncomingFoodData()
     }
 
     /**
-     * Fetches logged food data from Firestore and updates RecyclerView & Macros UI.
+     * Fetches logged food data from Firestore and updates the Daily Macro Breakdown UI.
      */
     private fun fetchDailyLogs() {
         db.collection("daily_logs")
@@ -76,8 +76,8 @@ class dailylogs : AppCompatActivity() {
                 // Update RecyclerView
                 dailyLogsAdapter.notifyDataSetChanged()
 
-                // Update Macro TextViews in both sections
-                updateMacroTextViews(totalCalories, totalProtein, totalCarbs, totalFats)
+                // Update only the Daily Macro Breakdown section
+                updateDailyMacroBreakdown(totalCalories, totalProtein, totalCarbs, totalFats)
 
                 if (loggedFoods.isEmpty()) {
                     Toast.makeText(this, "No logs found", Toast.LENGTH_SHORT).show()
@@ -90,16 +90,68 @@ class dailylogs : AppCompatActivity() {
     }
 
     /**
-     * Updates the TextViews in both the "Remaining Macros" and "Daily Macro Breakdown" sections.
+     * Fetches goal macros and updates the Remaining Macros UI.
      */
-    private fun updateMacroTextViews(calories: Int, protein: Int, carbs: Int, fats: Int) {
-        // Update Remaining Macros
-        binding.totalCaloriesCount.text = "$calories kcal"
+    private fun fetchAndComputeRemainingMacros() {
+        db.collection("userMacros").document("macros").get()
+            .addOnSuccessListener { macroDoc ->
+                if (macroDoc.exists()) {
+                    val goalMacros = macroDoc.toObject(Macros::class.java)
+                    if (goalMacros != null) {
+                        db.collection("daily_logs").get()
+                            .addOnSuccessListener { logs ->
+                                var sumProtein = 0
+                                var sumCarbs = 0
+                                var sumFats = 0
+
+                                for (doc in logs) {
+                                    try {
+                                        val item = doc.toObject(FoodItem::class.java)
+                                        sumProtein += item.protein
+                                        sumCarbs += item.carbs
+                                        sumFats += item.fats
+                                    } catch (e: Exception) {
+                                        Log.e("DailyLogs", "Error converting document: ${doc.id}", e)
+                                    }
+                                }
+
+                                // Compute remaining macros
+                                val remainingProtein = goalMacros.protein - sumProtein
+                                val remainingCarbs = goalMacros.carbs - sumCarbs
+                                val remainingFats = goalMacros.fats - sumFats
+
+                                // Update only the Remaining Macros section
+                                updateRemainingMacros(remainingProtein, remainingCarbs, remainingFats)
+                            }
+                            .addOnFailureListener { e ->
+                                Toast.makeText(this, "Failed to fetch remaining macros", Toast.LENGTH_SHORT).show()
+                                Log.e("DailyLogs", "Error fetching remaining macros", e)
+                            }
+                    }
+                } else {
+                    Toast.makeText(this, "Macro goals not set", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error fetching macro goals", Toast.LENGTH_SHORT).show()
+                Log.e("DailyLogs", "Error fetching macros", e)
+            }
+    }
+
+    /**
+     * Updates only the "Remaining Macros" section.
+     */
+    private fun updateRemainingMacros(protein: Int, carbs: Int, fats: Int) {
         binding.proteinRemaining.text = "Protein: ${protein}g"
         binding.carbsRemaining.text = "Carbs: ${carbs}g"
         binding.fatRemaining.text = "Fat: ${fats}g"
+    }
 
-        // Update Daily Macro Breakdown
+    /**
+     * Updates only the "Daily Macro Breakdown" section.
+     */
+    private fun updateDailyMacroBreakdown(calories: Int, protein: Int, carbs: Int, fats: Int) {
+        binding.totalCaloriesCount.text = "$calories kcal"
         binding.proteinValue.text = "${protein}g"
         binding.carbsValue.text = "${carbs}g"
         binding.fatValue.text = "${fats}g"
@@ -121,7 +173,8 @@ class dailylogs : AppCompatActivity() {
         db.collection("daily_logs").add(foodItem)
             .addOnSuccessListener {
                 Toast.makeText(this, "$foodName added to logs", Toast.LENGTH_SHORT).show()
-                fetchDailyLogs() // Refresh data
+                fetchDailyLogs() // Update Daily Macro Breakdown
+                fetchAndComputeRemainingMacros() // Update Remaining Macros
             }
             .addOnFailureListener { e ->
                 Log.e("DailyLogs", "Failed to add log", e)
@@ -130,7 +183,7 @@ class dailylogs : AppCompatActivity() {
     }
 
     /**
-     * Removes a food item from Firestore and updates RecyclerView.
+     * Removes a food item from Firestore and updates UI.
      */
     private fun removeFoodItem(foodItem: FoodItem) {
         db.collection("daily_logs")
@@ -142,7 +195,8 @@ class dailylogs : AppCompatActivity() {
                         .addOnSuccessListener {
                             loggedFoods.remove(foodItem)
                             dailyLogsAdapter.notifyDataSetChanged()
-                            fetchDailyLogs() // Refresh data after deletion
+                            fetchDailyLogs() // Update Daily Macro Breakdown
+                            fetchAndComputeRemainingMacros() // Update Remaining Macros
                         }
                         .addOnFailureListener { e ->
                             Toast.makeText(this, "Failed to remove item", Toast.LENGTH_SHORT).show()

@@ -91,19 +91,19 @@
                     android:gravity="center_horizontal"
                     android:orientation="vertical">
 
+                    <!-- Register Text -->
                     <Button
                         android:id="@+id/loginButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:backgroundTint="#000000"
-                        android:paddingVertical="10dp"
                         android:paddingHorizontal="46dp"
+                        android:paddingVertical="10dp"
+                        android:stateListAnimator="@null"
                         android:text="Login"
                         android:textColor="#FFFFFF"
-                        android:textSize="16sp"
-                        android:stateListAnimator="@null" />
+                        android:textSize="16sp" />
 
-                    <!-- Register Text -->
                     <TextView
                         android:id="@+id/registerTextView"
                         android:layout_width="wrap_content"

@@ -74,16 +74,32 @@
             android:textColor="#000000"/>
     </LinearLayout>
 
-    <!-- Delete Button (Optional) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/serving"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Serving: 5g"
+            android:layout_gravity="center"
+            android:textSize="14sp"
+            android:textColor="#000000"/>
+
     <Button
         android:id="@+id/deleteButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="Remove"
         android:textColor="#FFFFFF"
         android:backgroundTint="#D32F2F"
         android:paddingHorizontal="12dp"
         android:paddingVertical="4dp"/>
+    </LinearLayout>
+
 </LinearLayout>

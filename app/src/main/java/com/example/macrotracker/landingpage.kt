@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.macrotracker.databinding.ActivityLandingpageBinding
@@ -53,12 +54,8 @@ class landingpage : AppCompatActivity() {
 
 		// Set up search bar to filter food items
 		binding.searchBarInput.addTextChangedListener(object : TextWatcher {
-			override fun afterTextChanged(s: Editable?) {
-				// No action needed here
-			}
-			override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-				// No action needed here
-			}
+			override fun afterTextChanged(s: Editable?) { }
+			override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
 			override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 				val query = s.toString().trim().toLowerCase()
 				filteredFoodItems.clear()
@@ -78,25 +75,72 @@ class landingpage : AppCompatActivity() {
 		binding.macrosIconImage.setOnClickListener {
 			startActivity(Intent(this, editmacros::class.java))
 		}
-
 		binding.dailyLogsIconImage.setOnClickListener {
 			startActivity(Intent(this, dailylogs::class.java))
+		}
+
+		// Reset Button Listener
+		binding.resetButton.setOnClickListener {
+			AlertDialog.Builder(this)
+				.setTitle("Reset Data")
+				.setMessage("This will reset all daily logs and macros. Do you want to continue?")
+				.setPositiveButton("Yes") { dialog, _ ->
+					resetAllData()
+					dialog.dismiss()
+				}
+				.setNegativeButton("No") { dialog, _ ->
+					dialog.dismiss()
+				}
+				.show()
 		}
 	}
 
 	/**
+	 * Resets daily logs and macro goals in Firestore.
+	 */
+	private fun resetAllData() {
+		// 1. Delete all documents in "daily_logs"
+		db.collection("daily_logs").get()
+			.addOnSuccessListener { documents ->
+				val batch = db.batch()
+				for (doc in documents) {
+					batch.delete(doc.reference)
+				}
+				batch.commit().addOnSuccessListener {
+					Toast.makeText(this, "Daily logs reset", Toast.LENGTH_SHORT).show()
+					fetchAndComputeRemainingMacros() // Update UI after reset
+				}.addOnFailureListener {
+					Toast.makeText(this, "Failed to reset daily logs", Toast.LENGTH_SHORT).show()
+				}
+			}
+			.addOnFailureListener {
+				Toast.makeText(this, "Error resetting daily logs", Toast.LENGTH_SHORT).show()
+			}
+
+		// 2. Reset macros in "userMacros" (here, setting to 0 for all values, adjust as needed)
+		val defaultMacros = Macros(0, 0, 0, 0)
+		db.collection("userMacros").document("macros")
+			.set(defaultMacros)
+			.addOnSuccessListener {
+				Toast.makeText(this, "Macros reset", Toast.LENGTH_SHORT).show()
+				fetchAndComputeRemainingMacros()
+			}
+			.addOnFailureListener {
+				Toast.makeText(this, "Failed to reset macros", Toast.LENGTH_SHORT).show()
+			}
+	}
+
+	/**
 	 * Stores selected food in Firestore.
-	 * If a document with the same food name exists, it updates it by adding the nutritional values.
-	 * Otherwise, it creates a new document.
+	 * If a document with the same food name exists, it combines the nutritional values.
 	 */
 	private fun addFoodToFirestore(food: FoodItem) {
 		val foodRef = db.collection("daily_logs")
-		// Query for an existing document with the same food name
 		foodRef.whereEqualTo("name", food.name)
 			.get()
 			.addOnSuccessListener { documents ->
 				if (documents.isEmpty) {
-					// No existing entry: add new document
+					// No existing entry: add new document.
 					foodRef.add(food)
 						.addOnSuccessListener {
 							Toast.makeText(this, "${food.name} added to logs", Toast.LENGTH_SHORT).show()
@@ -106,27 +150,44 @@ class landingpage : AppCompatActivity() {
 							Toast.makeText(this, "Failed to add food", Toast.LENGTH_SHORT).show()
 						}
 				} else {
-					// If found, combine the food values
-					val doc = documents.documents[0]
-					val existingFood = doc.toObject(FoodItem::class.java)
-					if (existingFood != null) {
-						val combinedFood = FoodItem(
-							name = food.name,
-							calories = existingFood.calories + food.calories,
-							protein = existingFood.protein + food.protein,
-							carbs = existingFood.carbs + food.carbs,
-							fats = existingFood.fats + food.fats
-						)
-						// Update the existing document
-						foodRef.document(doc.id).set(combinedFood)
-							.addOnSuccessListener {
-								Toast.makeText(this, "${food.name} updated in logs", Toast.LENGTH_SHORT).show()
-								fetchAndComputeRemainingMacros()
-							}
-							.addOnFailureListener {
-								Toast.makeText(this, "Failed to update food", Toast.LENGTH_SHORT).show()
-							}
+					// Combine nutritional values from existing entries.
+					var combinedCalories = food.calories
+					var combinedProtein = food.protein
+					var combinedCarbs = food.carbs
+					var combinedFats = food.fats
+					val docsList = documents.documents
+					for (doc in docsList) {
+						val existingFood = doc.toObject(FoodItem::class.java)
+						if (existingFood != null) {
+							combinedCalories += existingFood.calories
+							combinedProtein += existingFood.protein
+							combinedCarbs += existingFood.carbs
+							combinedFats += existingFood.fats
+						}
 					}
+					val combinedFood = FoodItem(
+						name = food.name,
+						calories = combinedCalories,
+						protein = combinedProtein,
+						carbs = combinedCarbs,
+						fats = combinedFats
+					)
+					// Update the first document with the combined values.
+					val firstDocId = docsList[0].id
+					foodRef.document(firstDocId).set(combinedFood)
+						.addOnSuccessListener {
+							// Delete any extra duplicates.
+							if (docsList.size > 1) {
+								for (i in 1 until docsList.size) {
+									foodRef.document(docsList[i].id).delete()
+								}
+							}
+							Toast.makeText(this, "${food.name} updated in logs", Toast.LENGTH_SHORT).show()
+							fetchAndComputeRemainingMacros()
+						}
+						.addOnFailureListener {
+							Toast.makeText(this, "Failed to update food", Toast.LENGTH_SHORT).show()
+						}
 				}
 			}
 			.addOnFailureListener {
@@ -135,8 +196,8 @@ class landingpage : AppCompatActivity() {
 	}
 
 	/**
-	 * Fetches the macro goals and daily logs from Firestore, computes the remaining macros,
-	 * and updates the TextViews (calorieCount, proteinCount, carbsCount, fatCount).
+	 * Fetches macro goals and daily logs from Firestore, computes remaining macros,
+	 * and updates the corresponding TextViews.
 	 */
 	private fun fetchAndComputeRemainingMacros() {
 		db.collection("userMacros").document("macros").get()
