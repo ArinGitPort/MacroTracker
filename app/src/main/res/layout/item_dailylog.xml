@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/roundcorner"
     android:padding="12dp"
     android:layout_marginBottom="8dp"
-    android:elevation="2dp">
+    android:elevation="4dp"
+    >
 
     <!-- Food Name -->
     <TextView
@@ -17,16 +19,16 @@
         android:text="Food Name"
         android:textSize="16sp"
         android:textColor="#000000"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:paddingBottom="4dp"/>
 
-    <!-- Macronutrients Container -->
+    <!-- Macronutrients Row 1: Calories & Protein -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="4dp">
 
-        <!-- Calories -->
         <TextView
             android:id="@+id/calories"
             android:layout_width="0dp"
@@ -36,7 +38,6 @@
             android:textSize="14sp"
             android:textColor="#000000"/>
 
-        <!-- Protein -->
         <TextView
             android:id="@+id/protein"
             android:layout_width="0dp"
@@ -47,13 +48,13 @@
             android:textColor="#000000"/>
     </LinearLayout>
 
+    <!-- Macronutrients Row 2: Carbs & Fats -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="2dp">
 
-        <!-- Carbs -->
         <TextView
             android:id="@+id/carbs"
             android:layout_width="0dp"
@@ -63,7 +64,6 @@
             android:textSize="14sp"
             android:textColor="#000000"/>
 
-        <!-- Fats -->
         <TextView
             android:id="@+id/fats"
             android:layout_width="0dp"
@@ -74,9 +74,13 @@
             android:textColor="#000000"/>
     </LinearLayout>
 
+    <!-- Serving & Buttons Row -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="6dp">
 
         <TextView
             android:id="@+id/serving"
@@ -84,22 +88,35 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Serving: 5g"
-            android:layout_gravity="center"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="#000000"
+            android:gravity="center_vertical"/>
 
-    <Button
-        android:id="@+id/deleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="Remove"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#D32F2F"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="4dp"/>
+        <!-- Remove Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove"
+            android:textColor="#FFFFFF"
+            android:layout_margin="5dp"
+            android:backgroundTint="#000000"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            app:cornerRadius="12dp"/>
+
+        <!-- Edit Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/editButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edit"
+            android:textColor="#FFFFFF"
+            android:layout_margin="5dp"
+            android:backgroundTint="#000000"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
+            app:cornerRadius="12dp"/>
     </LinearLayout>
 
 </LinearLayout>
