@@ -18,11 +18,13 @@ class DailyLogsAdapter(
         val protein: TextView = view.findViewById(R.id.protein)
         val carbs: TextView = view.findViewById(R.id.carbs)
         val fats: TextView = view.findViewById(R.id.fats)
+        val serving: TextView = view.findViewById(R.id.serving)
         val deleteButton: Button = view.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_dailylog, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_dailylog, parent, false)
         return ViewHolder(view)
     }
 
@@ -33,12 +35,14 @@ class DailyLogsAdapter(
         holder.protein.text = "Protein: ${food.protein}g"
         holder.carbs.text = "Carbs: ${food.carbs}g"
         holder.fats.text = "Fats: ${food.fats}g"
+        // Display the serving information (e.g., "Serving: 1 serving" or "Serving: 200 g")
+        holder.serving.text = "Serving: ${food.servingSize} ${food.unit}"
 
         // Handle delete button click
         holder.deleteButton.setOnClickListener {
-            onRemoveClick(food) // Sends the food to be removed
+            onRemoveClick(food)
         }
     }
 
-    override fun getItemCount() = loggedFoods.size
+    override fun getItemCount(): Int = loggedFoods.size
 }

@@ -84,43 +84,35 @@
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"/>
 
-                    <LinearLayout
+
+                    <TextView
+                        android:id="@+id/proteinRemaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center">
+                        android:text="Protein: 100g"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp"/>
 
-                        <!-- Carbs -->
-                        <TextView
-                            android:id="@+id/carbsRemaining"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Carbs: 120g"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp"
-                            android:layout_marginEnd="12dp"/>
+                    <TextView
+                        android:id="@+id/carbsRemaining"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Carbs: 120g"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp"/>
 
-                        <!-- Protein -->
-                        <TextView
-                            android:id="@+id/proteinRemaining"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Protein: 100g"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp"
-                            android:layout_marginEnd="12dp"/>
-
-                        <!-- Fat -->
-                        <TextView
-                            android:id="@+id/fatRemaining"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Fat: 80g"
-                            android:textColor="#FFFFFF"
-                            android:textSize="12sp"/>
-                    </LinearLayout>
-
+                    <TextView
+                        android:id="@+id/fatRemaining"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fat: 80g"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginTop="4dp"/>
                 </LinearLayout>
+
 
             </LinearLayout>
 

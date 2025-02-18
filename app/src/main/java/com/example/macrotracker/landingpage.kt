@@ -29,7 +29,6 @@ class landingpage : AppCompatActivity() {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-
 		// ViewBinding Setup
 		binding = ActivityLandingpageBinding.inflate(layoutInflater)
 		setContentView(binding.root)
@@ -37,16 +36,19 @@ class landingpage : AppCompatActivity() {
 		// Update remaining macros based on goal macros and daily logs
 		fetchAndComputeRemainingMacros()
 
-		// Set up RecyclerView for food selection with the filtered list
+		// Set up RecyclerView for food selection using the filtered list
 		binding.mainFoodRecyclerView.layoutManager = LinearLayoutManager(this)
-		val foodAdapter = FoodAdapter(filteredFoodItems) { selectedFood, multiplier ->
-			// Multiply nutritional values by multiplier before adding to Firestore
+		// Note: The FoodAdapter now passes three parameters: selectedFood, multiplier, and unit.
+		val foodAdapter = FoodAdapter(filteredFoodItems) { selectedFood, multiplier, unit ->
+			// Create modified FoodItem including servingSize and unit.
 			val modifiedFood = FoodItem(
-				selectedFood.name,
-				(selectedFood.calories * multiplier).toInt(),
-				(selectedFood.protein * multiplier).toInt(),
-				(selectedFood.carbs * multiplier).toInt(),
-				(selectedFood.fats * multiplier).toInt()
+				name = selectedFood.name,
+				calories = (selectedFood.calories * multiplier).toInt(),
+				protein = (selectedFood.protein * multiplier).toInt(),
+				carbs = (selectedFood.carbs * multiplier).toInt(),
+				fats = (selectedFood.fats * multiplier).toInt(),
+				servingSize = multiplier,
+				unit = unit
 			)
 			addFoodToFirestore(modifiedFood)
 		}
@@ -117,7 +119,7 @@ class landingpage : AppCompatActivity() {
 				Toast.makeText(this, "Error resetting daily logs", Toast.LENGTH_SHORT).show()
 			}
 
-		// 2. Reset macros in "userMacros" (here, setting to 0 for all values, adjust as needed)
+		// 2. Reset macros in "userMacros" (here, setting to 0 for all values; adjust as needed)
 		val defaultMacros = Macros(0, 0, 0, 0)
 		db.collection("userMacros").document("macros")
 			.set(defaultMacros)
@@ -132,7 +134,7 @@ class landingpage : AppCompatActivity() {
 
 	/**
 	 * Stores selected food in Firestore.
-	 * If a document with the same food name exists, it combines the nutritional values.
+	 * If a document with the same food name exists, it combines the nutritional values and serving size.
 	 */
 	private fun addFoodToFirestore(food: FoodItem) {
 		val foodRef = db.collection("daily_logs")
@@ -150,11 +152,12 @@ class landingpage : AppCompatActivity() {
 							Toast.makeText(this, "Failed to add food", Toast.LENGTH_SHORT).show()
 						}
 				} else {
-					// Combine nutritional values from existing entries.
+					// Combine nutritional values and serving sizes from existing entries.
 					var combinedCalories = food.calories
 					var combinedProtein = food.protein
 					var combinedCarbs = food.carbs
 					var combinedFats = food.fats
+					var combinedServingSize = food.servingSize
 					val docsList = documents.documents
 					for (doc in docsList) {
 						val existingFood = doc.toObject(FoodItem::class.java)
@@ -163,6 +166,7 @@ class landingpage : AppCompatActivity() {
 							combinedProtein += existingFood.protein
 							combinedCarbs += existingFood.carbs
 							combinedFats += existingFood.fats
+							combinedServingSize += existingFood.servingSize
 						}
 					}
 					val combinedFood = FoodItem(
@@ -170,13 +174,14 @@ class landingpage : AppCompatActivity() {
 						calories = combinedCalories,
 						protein = combinedProtein,
 						carbs = combinedCarbs,
-						fats = combinedFats
+						fats = combinedFats,
+						servingSize = combinedServingSize,
+						unit = food.unit
 					)
-					// Update the first document with the combined values.
+					// Update the first document with the combined values and delete duplicates.
 					val firstDocId = docsList[0].id
 					foodRef.document(firstDocId).set(combinedFood)
 						.addOnSuccessListener {
-							// Delete any extra duplicates.
 							if (docsList.size > 1) {
 								for (i in 1 until docsList.size) {
 									foodRef.document(docsList[i].id).delete()
@@ -196,7 +201,7 @@ class landingpage : AppCompatActivity() {
 	}
 
 	/**
-	 * Fetches macro goals and daily logs from Firestore, computes remaining macros,
+	 * Fetches the macro goals and daily logs from Firestore, computes the remaining macros,
 	 * and updates the corresponding TextViews.
 	 */
 	private fun fetchAndComputeRemainingMacros() {
