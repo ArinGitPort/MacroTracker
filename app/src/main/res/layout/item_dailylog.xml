@@ -22,6 +22,17 @@
         android:textStyle="bold"
         android:paddingBottom="4dp"/>
 
+    <TextView
+        android:id="@+id/timestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TimeStamp"
+        android:textSize="16sp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:paddingBottom="4dp"/>
+
+
     <!-- Macronutrients Row 1: Calories & Protein -->
     <LinearLayout
         android:layout_width="match_parent"

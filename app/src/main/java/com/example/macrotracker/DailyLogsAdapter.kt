@@ -10,7 +10,11 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 
 class DailyLogsAdapter(
     private val loggedFoods: MutableList<FoodItem>,
@@ -25,6 +29,7 @@ class DailyLogsAdapter(
         val carbs: TextView = view.findViewById(R.id.carbs)
         val fats: TextView = view.findViewById(R.id.fats)
         val serving: TextView = view.findViewById(R.id.serving)
+        val timestamp: TextView = view.findViewById(R.id.timestamp) // Timestamp field
         val deleteButton: Button = view.findViewById(R.id.deleteButton)
         val editButton: Button = view.findViewById(R.id.editButton)
     }
@@ -43,6 +48,13 @@ class DailyLogsAdapter(
         holder.carbs.text = "Carbs: ${food.carbs}g"
         holder.fats.text = "Fats: ${food.fats}g"
         holder.serving.text = "Serving: ${food.servingSize} ${food.unit}"
+
+        // Display timestamp (if available)
+        if (food.timestamp != null) {
+            holder.timestamp.text = "Last Updated: ${formatTimestamp(food.timestamp!!)}"
+        } else {
+            holder.timestamp.text = "Last Updated: N/A"
+        }
 
         // Handle delete button click
         holder.deleteButton.setOnClickListener {
@@ -72,12 +84,10 @@ class DailyLogsAdapter(
             .setView(dialogView)
             .create()
 
-        // Handle Cancel Button
         cancelButton.setOnClickListener {
             dialog.dismiss()
         }
 
-        // Handle Update Button
         updateButton.setOnClickListener {
             val newServingSize = servingInput.text.toString().toDoubleOrNull()
             if (newServingSize != null && newServingSize > 0) {
@@ -92,10 +102,8 @@ class DailyLogsAdapter(
         dialog.show()
     }
 
-
-
     /**
-     * Updates the serving size in Firestore and recalculates macros.
+     * Updates the serving size in Firestore and timestamps it.
      */
     private fun updateFoodServing(context: Context, food: FoodItem, newServingSize: Double) {
         val db = FirebaseFirestore.getInstance()
@@ -114,12 +122,13 @@ class DailyLogsAdapter(
                         "carbs" to (food.carbs * scaleFactor).toInt(),
                         "fats" to (food.fats * scaleFactor).toInt(),
                         "servingSize" to newServingSize,
-                        "unit" to food.unit
+                        "unit" to food.unit,
+                        "timestamp" to Timestamp.now() // Store updated timestamp
                     )
 
                     docRef.update(updatedFood)
                         .addOnSuccessListener {
-                            onEditClick() // Refresh UI
+                            onEditClick()
                             Toast.makeText(context, "Serving updated", Toast.LENGTH_SHORT).show()
                         }
                         .addOnFailureListener {
@@ -131,4 +140,17 @@ class DailyLogsAdapter(
                 Toast.makeText(context, "Error finding food item", Toast.LENGTH_SHORT).show()
             }
     }
+
+    /**
+     * Formats the Firestore timestamp to a readable date string.
+     */
+    private fun formatTimestamp(timestamp: Timestamp): String {
+        val date = timestamp.toDate()
+        val sdf = SimpleDateFormat("MMM dd, yyyy - hh:mm a", Locale.getDefault())
+
+        sdf.timeZone = TimeZone.getTimeZone("Asia/Manila")
+
+        return sdf.format(date)
+    }
+
 }

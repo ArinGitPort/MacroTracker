@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.macrotracker.databinding.ActivityLandingpageBinding
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 
@@ -87,6 +88,11 @@ class landingpage : AppCompatActivity() {
 		binding.macrosIconImage.setOnClickListener {
 			startActivity(Intent(this, editmacros::class.java))
 		}
+
+		binding.macrosIconImage.setOnClickListener {
+			startActivity(Intent(this, userprofile::class.java))
+		}
+
 		binding.dailyLogsIconImage.setOnClickListener {
 			startActivity(Intent(this, dailylogs::class.java))
 		}
@@ -182,8 +188,9 @@ class landingpage : AppCompatActivity() {
 			.get()
 			.addOnSuccessListener { documents ->
 				if (documents.isEmpty) {
-					// No existing entry: add new document.
-					foodRef.add(food)
+					// **New Entry: Add food with a fresh timestamp**
+					val newFood = food.copy(timestamp = Timestamp.now())
+					foodRef.add(newFood)
 						.addOnSuccessListener {
 							Toast.makeText(this, "${food.name} added to logs", Toast.LENGTH_SHORT).show()
 							fetchAndComputeRemainingMacros()
@@ -192,53 +199,40 @@ class landingpage : AppCompatActivity() {
 							Toast.makeText(this, "Failed to add food", Toast.LENGTH_SHORT).show()
 						}
 				} else {
-					// Combine nutritional values and serving sizes from existing entries.
-					var combinedCalories = food.calories
-					var combinedProtein = food.protein
-					var combinedCarbs = food.carbs
-					var combinedFats = food.fats
-					var combinedServingSize = food.servingSize
-					val docsList = documents.documents
-					for (doc in docsList) {
+					// **Existing Entry: Update macros & timestamp**
+					val firstDocId = documents.documents[0].id
+					val docRef = foodRef.document(firstDocId)
+
+					docRef.get().addOnSuccessListener { doc ->
 						val existingFood = doc.toObject(FoodItem::class.java)
 						if (existingFood != null) {
-							combinedCalories += existingFood.calories
-							combinedProtein += existingFood.protein
-							combinedCarbs += existingFood.carbs
-							combinedFats += existingFood.fats
-							combinedServingSize += existingFood.servingSize
+							val updatedFood = mapOf(
+								"calories" to (existingFood.calories + food.calories),
+								"protein" to (existingFood.protein + food.protein),
+								"carbs" to (existingFood.carbs + food.carbs),
+								"fats" to (existingFood.fats + food.fats),
+								"servingSize" to (existingFood.servingSize + food.servingSize),
+								"unit" to food.unit,
+								"timestamp" to Timestamp.now() // **Ensure timestamp updates**
+							)
+
+							docRef.update(updatedFood)
+								.addOnSuccessListener {
+									Toast.makeText(this, "${food.name} updated in logs", Toast.LENGTH_SHORT).show()
+									fetchAndComputeRemainingMacros()
+								}
+								.addOnFailureListener {
+									Toast.makeText(this, "Failed to update food", Toast.LENGTH_SHORT).show()
+								}
 						}
 					}
-					val combinedFood = FoodItem(
-						name = food.name,
-						calories = combinedCalories,
-						protein = combinedProtein,
-						carbs = combinedCarbs,
-						fats = combinedFats,
-						servingSize = combinedServingSize,
-						unit = food.unit
-					)
-					// Update the first document with the combined values and delete duplicates.
-					val firstDocId = docsList[0].id
-					foodRef.document(firstDocId).set(combinedFood)
-						.addOnSuccessListener {
-							if (docsList.size > 1) {
-								for (i in 1 until docsList.size) {
-									foodRef.document(docsList[i].id).delete()
-								}
-							}
-							Toast.makeText(this, "${food.name} updated in logs", Toast.LENGTH_SHORT).show()
-							fetchAndComputeRemainingMacros()
-						}
-						.addOnFailureListener {
-							Toast.makeText(this, "Failed to update food", Toast.LENGTH_SHORT).show()
-						}
 				}
 			}
 			.addOnFailureListener {
 				Toast.makeText(this, "Error checking food logs", Toast.LENGTH_SHORT).show()
 			}
 	}
+
 
 	/**
 	 * Fetches the macro goals and daily logs from Firestore, computes the remaining macros,

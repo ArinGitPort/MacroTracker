@@ -1,11 +1,14 @@
 package com.example.macrotracker
 
+import com.google.firebase.Timestamp
+
 data class FoodItem(
     val name: String = "",
     val calories: Int = 0,
     val protein: Int = 0,
     val carbs: Int = 0,
     val fats: Int = 0,
-    var servingSize: Double = 1.0,  // Default is 1 serving
-    var unit: String = "serving"  // Can be "g" or "serving"
+    var servingSize: Double = 1.0,
+    var unit: String = "serving",
+    val timestamp: Timestamp? = null
 )
