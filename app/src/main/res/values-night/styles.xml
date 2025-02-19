@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="CustomRadioTheme" parent="Theme.Material3.Light">
+        <item name="colorControlActivated">@color/white</item>  <!-- Checked color -->
+        <item name="colorControlNormal">@color/gray</item>  <!-- Unchecked color -->
+    </style>
+
+    <style name="CustomAlertDialog" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+</resources>

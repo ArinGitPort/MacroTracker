@@ -14,6 +14,7 @@ class dailylogs : AppCompatActivity() {
     private lateinit var dailyLogsAdapter: DailyLogsAdapter
     private val loggedFoods = mutableListOf<FoodItem>()
 
+
     // Firestore instance
     private val db = FirebaseFirestore.getInstance()
 
@@ -23,13 +24,17 @@ class dailylogs : AppCompatActivity() {
         setContentView(binding.root)
 
         // Set up RecyclerView with adapter
-        dailyLogsAdapter = DailyLogsAdapter(loggedFoods) { foodItem ->
-            removeFoodItem(foodItem)
-        }
+        dailyLogsAdapter = DailyLogsAdapter(
+            loggedFoods,
+            onRemoveClick = { foodItem -> removeFoodItem(foodItem) },
+            onEditClick = { fetchDailyLogs(); fetchAndComputeRemainingMacros() } // Refresh UI after editing
+        )
+
         binding.dailyFoodRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@dailylogs)
             adapter = dailyLogsAdapter
         }
+
 
         // Back Button Navigation
         binding.backButton.setOnClickListener {

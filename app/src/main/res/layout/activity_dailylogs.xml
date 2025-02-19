@@ -55,7 +55,7 @@
                         android:id="@+id/totalCaloriesCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1500"
+                        android:text="0"
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         android:textStyle="bold"/>
@@ -89,7 +89,7 @@
                         android:id="@+id/proteinRemaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Protein: 100g"
+                        android:text="Protein: 0"
                         android:textColor="#FFFFFF"
                         android:textSize="12sp"
                         android:layout_marginTop="4dp"/>
@@ -98,7 +98,7 @@
                         android:id="@+id/carbsRemaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Carbs: 120g"
+                        android:text="Carbs: 0"
                         android:textColor="#FFFFFF"
                         android:textSize="12sp"
                         android:layout_marginTop="4dp"/>
@@ -107,7 +107,7 @@
                         android:id="@+id/fatRemaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Fat: 80g"
+                        android:text="Fat: 0"
                         android:textColor="#FFFFFF"
                         android:textSize="12sp"
                         android:layout_marginTop="4dp"/>
@@ -129,7 +129,7 @@
 
                 <TextView
                     android:id="@+id/macrosBreakdownLabel"
-                    android:text="Daily Macro Breakdown"
+                    android:text="Consumed Macro Breakdown"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -161,7 +161,7 @@
                         android:id="@+id/proteinValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="100g"
+                        android:text="0"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -187,7 +187,7 @@
                         android:id="@+id/carbsValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="120g"
+                        android:text="0"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -213,7 +213,7 @@
                         android:id="@+id/fatValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="80g"
+                        android:text="0"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"/>
                 </LinearLayout>
@@ -251,8 +251,8 @@
 
                 <ImageView
                     android:id="@+id/backButton"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:src="@drawable/backbutton_icon"
                     android:contentDescription="Back Button"
                     android:clickable="true"

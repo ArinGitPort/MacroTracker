@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.macrotracker.databinding.ActivityLandingpageBinding
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
 
 class landingpage : AppCompatActivity() {
 	private lateinit var binding: ActivityLandingpageBinding
@@ -33,7 +36,14 @@ class landingpage : AppCompatActivity() {
 		binding = ActivityLandingpageBinding.inflate(layoutInflater)
 		setContentView(binding.root)
 
-		// Update remaining macros based on goal macros and daily logs
+		// For testing purposes: if intent has "forceReset" true, trigger the reset dialog.
+		if (intent.getBooleanExtra("forceReset", false)) {
+			showDailyResetDialog()
+		} else {
+			// Otherwise, check if it's the end of the day.
+			checkAndPromptDailyReset()
+		}
+
 		fetchAndComputeRemainingMacros()
 
 		// Set up RecyclerView for food selection using the filtered list
@@ -83,22 +93,52 @@ class landingpage : AppCompatActivity() {
 
 		// Reset Button Listener
 		binding.resetButton.setOnClickListener {
-			AlertDialog.Builder(this)
-				.setTitle("Reset Data")
-				.setMessage("This will reset all daily logs and macros. Do you want to continue?")
-				.setPositiveButton("Yes") { dialog, _ ->
-					resetAllData()
-					dialog.dismiss()
-				}
-				.setNegativeButton("No") { dialog, _ ->
-					dialog.dismiss()
-				}
-				.show()
+			showDailyResetDialog()
 		}
 	}
 
 	/**
-	 * Resets daily logs and macro goals in Firestore.
+	 * Checks if it's the end of the day (midnight) and, if so, shows the reset dialog.
+	 */
+	private fun checkAndPromptDailyReset() {
+		val calendar = Calendar.getInstance()
+		val hour = calendar.get(Calendar.HOUR_OF_DAY)
+		// For testing, you might temporarily change this condition.
+		if (hour == 0) { // If it's midnight (0 hours)
+			showDailyResetDialog()
+		}
+	}
+
+	/**
+	 * Displays a pop-up asking if the user wants to reset their daily logs.
+	 */
+	private fun showDailyResetDialog() {
+		val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_reset_day, null)
+		val alertDialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+			.setView(dialogView)
+			.create()
+
+		// Make the background transparent for a custom look.
+		alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+		// Find buttons in the custom dialog layout.
+		val confirmButton = dialogView.findViewById<Button>(R.id.confirmButton)
+		val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+
+		confirmButton.setOnClickListener {
+			resetAllData()
+			alertDialog.dismiss()
+		}
+
+		cancelButton.setOnClickListener {
+			alertDialog.dismiss()
+		}
+
+		alertDialog.show()
+	}
+
+	/**
+	 * Resets all daily logs and macro goals in Firestore.
 	 */
 	private fun resetAllData() {
 		// 1. Delete all documents in "daily_logs"

@@ -3,4 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#3C3F46</color>
+    <color name="radio_checked">#FFFFFFFF</color>
+    <color name="radio_unchecked">#3C3F46</color>
+
 </resources>

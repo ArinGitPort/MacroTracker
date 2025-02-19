@@ -53,7 +53,7 @@
 						android:id="@+id/calorieCount"
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
-						android:text="2100"
+						android:text="0"
 						android:textColor="#FFFFFF"
 						android:textSize="20sp" />
 
@@ -92,6 +92,7 @@
 						android:id="@+id/remainingMacrosTextView"
 						android:textColor="#FFFFFF"
 						android:textSize="14sp"
+						android:layout_gravity="center_horizontal"
 						android:layout_marginBottom="14dp"
 						android:layout_height="wrap_content"
 						android:layout_width="wrap_content"
@@ -104,25 +105,28 @@
 						android:gravity="center_vertical"
 						android:layout_marginBottom="12dp"
 						android:orientation="horizontal">
+
 						<TextView
-							android:id="@+id/carbsTextView"
+							android:id="@+id/proteinTextView"
 							android:textColor="#FFFFFF"
 							android:textSize="11sp"
 							android:layout_marginEnd="4dp"
 							android:layout_height="wrap_content"
 							android:layout_width="match_parent"
 							android:layout_weight="1"
-							android:text="Carbs"
-						/>
+							android:text="Protein"
+							/>
+
 						<TextView
-							android:id="@+id/carbsCount"
+							android:id="@+id/proteinCount"
 							android:textColor="#FFFFFF"
-							android:textSize="11sp"
+							android:textSize="10sp"
 							android:textStyle="bold"
 							android:layout_height="wrap_content"
 							android:layout_width="wrap_content"
-							android:text="120"
-						/>
+							android:text="0"
+							/>
+
 					</LinearLayout>
 
 					<LinearLayout
@@ -132,27 +136,27 @@
 						android:gravity="center_vertical"
 						android:layout_marginBottom="12dp"
 						android:orientation="horizontal">
+
+
 						<TextView
-							android:id="@+id/proteinTextView"
+							android:id="@+id/carbsTextView"
 							android:textColor="#FFFFFF"
 							android:textSize="11sp"
+							android:layout_marginEnd="4dp"
 							android:layout_height="wrap_content"
-							android:layout_width="wrap_content"
-							android:text="Protein"
-						/>
-						<View
-							android:layout_width="0dp"
-							android:layout_height="0dp"
+							android:layout_width="match_parent"
 							android:layout_weight="1"
-						 />
+							android:text="Carbs"
+							/>
 						<TextView
-							android:id="@+id/proteinCount"
+							android:id="@+id/carbsCount"
 							android:textColor="#FFFFFF"
-							android:textSize="10sp"
+							android:textSize="11sp"
+							android:textStyle="bold"
 							android:layout_height="wrap_content"
 							android:layout_width="wrap_content"
-							android:text="100"
-						/>
+							android:text="0"
+							/>
 					</LinearLayout>
 					<LinearLayout
 						android:id="@+id/fatBoxParent"
@@ -177,7 +181,7 @@
 							android:textStyle="bold"
 							android:layout_height="wrap_content"
 							android:layout_width="wrap_content"
-							android:text="80"
+							android:text="0"
 						/>
 					</LinearLayout>
 				</LinearLayout>
