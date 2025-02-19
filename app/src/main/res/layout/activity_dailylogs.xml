@@ -1,48 +1,57 @@
-<LinearLayout
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dailylogs"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#000000">
+    android:background="#000000"
+    tools:context=".dailylogs">
 
+    <!-- ScrollView that fills the screen -->
     <ScrollView
-        android:layout_width="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:paddingTop="9dp"
         android:paddingHorizontal="12dp"
-        android:background="#2C2C2C">
+        android:background="#2C2C2C"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
+        <!-- Container for all content -->
         <LinearLayout
+            android:id="@+id/contentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Calories Display -->
+            <!-- Calories Display Section -->
             <LinearLayout
                 android:id="@+id/caloriesSummaryContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/roundcornerblack"
                 android:paddingVertical="16dp"
                 android:paddingHorizontal="12dp"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginBottom="8dp">
 
+                <!-- Total Calories Container -->
                 <LinearLayout
                     android:id="@+id/totalCaloriesContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="12dp"
-                    android:paddingHorizontal="20dp"
                     android:orientation="vertical"
-                    android:gravity="center">
-
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
+                    android:paddingHorizontal="20dp">
                     <TextView
                         android:id="@+id/totalCaloriesLabel"
                         android:layout_width="wrap_content"
@@ -50,7 +59,6 @@
                         android:text="Total Calories"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"/>
-
                     <TextView
                         android:id="@+id/totalCaloriesCount"
                         android:layout_width="wrap_content"
@@ -61,21 +69,21 @@
                         android:textStyle="bold"/>
                 </LinearLayout>
 
+                <!-- Spacer -->
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1"/>
 
-                <!-- Remaining Macros -->
+                <!-- Remaining Macros Container -->
                 <LinearLayout
                     android:id="@+id/macrosOverviewContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="12dp"
-                    android:paddingHorizontal="20dp"
                     android:orientation="vertical"
-                    android:gravity="center">
-
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
+                    android:paddingHorizontal="20dp">
                     <TextView
                         android:id="@+id/macrosLabel"
                         android:layout_width="wrap_content"
@@ -83,8 +91,6 @@
                         android:text="Remaining Macros"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"/>
-
-
                     <TextView
                         android:id="@+id/proteinRemaining"
                         android:layout_width="wrap_content"
@@ -93,7 +99,6 @@
                         android:textColor="#FFFFFF"
                         android:textSize="12sp"
                         android:layout_marginTop="4dp"/>
-
                     <TextView
                         android:id="@+id/carbsRemaining"
                         android:layout_width="wrap_content"
@@ -102,7 +107,6 @@
                         android:textColor="#FFFFFF"
                         android:textSize="12sp"
                         android:layout_marginTop="4dp"/>
-
                     <TextView
                         android:id="@+id/fatRemaining"
                         android:layout_width="wrap_content"
@@ -112,115 +116,111 @@
                         android:textSize="12sp"
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
-
-
             </LinearLayout>
 
-            <!-- Macros Breakdown -->
-            <LinearLayout
+            <!-- Macros Breakdown Section -->
+            <androidx.cardview.widget.CardView
                 android:id="@+id/macrosDetailsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="vertical"
                 android:layout_marginBottom="8dp"
-                android:padding="10dp"
-                android:background="@drawable/roundcornerblack">
-
-                <TextView
-                    android:id="@+id/macrosBreakdownLabel"
-                    android:text="Consumed Macro Breakdown"
-                    android:textColor="#FFFFFF"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:hint="Macros Breakdown"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="center"
-                    android:layout_height="30dp"
-                    android:layout_width="365dp"
-                    />
-
-                <!-- Protein -->
+                android:layout_marginHorizontal="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="#000000">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="6dp">
+                    android:orientation="vertical"
+                    android:background="@drawable/roundcornerblack"
+                    android:padding="10dp"
+                    android:gravity="center_vertical">
 
                     <TextView
-                        android:id="@+id/proteinTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Protein"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"/>
-
-                    <TextView
-                        android:id="@+id/proteinValue"
+                        android:id="@+id/macrosBreakdownLabel"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
+                        android:layout_height="30dp"
+                        android:text="Consumed Macro Breakdown"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp"/>
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:gravity="center"
+                        android:layout_marginBottom="8dp"/>
+
+                    <!-- Protein Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="6dp">
+                        <TextView
+                            android:id="@+id/proteinTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Protein"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:id="@+id/proteinValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+                    <!-- Carbs Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="6dp">
+                        <TextView
+                            android:id="@+id/carbsTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Carbs"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:id="@+id/carbsValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
+
+                    <!-- Fat Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingVertical="6dp">
+                        <TextView
+                            android:id="@+id/fatTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Fat"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"/>
+                        <TextView
+                            android:id="@+id/fatValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"/>
+                    </LinearLayout>
                 </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-                <!-- Carbs -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="6dp">
-
-                    <TextView
-                        android:id="@+id/carbsTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Carbs"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"/>
-
-                    <TextView
-                        android:id="@+id/carbsValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"/>
-                </LinearLayout>
-
-                <!-- Fat -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="6dp">
-
-                    <TextView
-                        android:id="@+id/fatTextView"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Fat"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"/>
-
-                    <TextView
-                        android:id="@+id/fatValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="0"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"/>
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- RecyclerView for Logged Foods -->
+            <!-- Food Logs Label -->
             <TextView
                 android:id="@+id/foodLogsLabel"
                 android:layout_width="wrap_content"
@@ -230,9 +230,10 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"
-                android:layout_gravity="center"
+                android:layout_gravity="center_horizontal"
                 android:paddingHorizontal="12dp"/>
 
+            <!-- RecyclerView for Logged Foods -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dailyFoodRecyclerView"
                 android:layout_width="match_parent"
@@ -241,28 +242,17 @@
                 android:padding="8dp"
                 tools:listitem="@layout/item_dailylog"/>
 
-            <LinearLayout
-                android:id="@+id/backButtonParent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                android:layout_marginTop="5dp">
-
-                <ImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/backbutton_icon"
-                    android:contentDescription="Back Button"
-                    android:clickable="true"
-                    android:focusable="true" />
-            </LinearLayout>
-
+            <!-- Back Button -->
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/backbutton_icon"
+                android:contentDescription="Back Button"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_marginTop="8dp"
+                android:layout_gravity="center"/>
         </LinearLayout>
-
-
-
     </ScrollView>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
