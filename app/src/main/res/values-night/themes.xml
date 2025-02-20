@@ -10,11 +10,6 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <!-- Light Mode Theme -->
-    <style name="Theme.MacroTracker.Light" parent="Base.Theme.MacroTracker">
-        <item name="android:colorBackground">@color/white</item>
-        <item name="android:textColorPrimary">@color/black</item> <!-- Make sure to override for specific views -->
-    </style>
 
     <!-- Dark Mode Theme -->
     <style name="Theme.MacroTracker.Dark" parent="Base.Theme.MacroTracker">

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2C2C2C"
+    tools:context=".NutritionSettingsActivity">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/roundcornerblack"
+            android:padding="24dp">
+
+            <!-- Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nutrition Settings"
+                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"/>
+
+            <!-- Height -->
+            <EditText
+                android:id="@+id/heightInput"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Enter Height (cm)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/settings_input_field"
+                android:textColor="@color/black"
+                android:textColorHint="#BDBDBD"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Weight -->
+            <EditText
+                android:id="@+id/weightInput"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Enter Weight (kg)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/settings_input_field"
+                android:textColor="@color/black"
+                android:textColorHint="#BDBDBD"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Gender Spinner -->
+            <Spinner
+                android:id="@+id/genderSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/spinner_field"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"
+                android:entries="@array/gender_options"/>
+
+            <!-- Today's Weight -->
+            <EditText
+                android:id="@+id/todaysWeightInput"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Today's Weight (kg)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/settings_input_field"
+                android:textColor="@color/black"
+                android:textColorHint="#BDBDBD"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Goal Weight -->
+            <EditText
+                android:id="@+id/goalWeightInput"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Goal Weight (kg)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/settings_input_field"
+                android:textColor="@color/black"
+                android:textColorHint="#BDBDBD"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Exercise Frequency Spinner -->
+            <Spinner
+                android:id="@+id/exerciseFrequencySpinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/spinner_field"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:layout_marginBottom="16dp"
+                android:entries="@array/activity_levels"/>
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/saveNutritionSettingsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Save Settings"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                android:background="@drawable/button_confirm_bg"
+                android:textColor="#FFFFFF"
+                android:paddingVertical="12dp"
+                android:elevation="4dp"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- Back Button -->
+            <ImageView
+                android:id="@+id/backButton"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:src="@drawable/gobackbut"
+                android:contentDescription="Back Button"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -56,7 +56,7 @@
                         android:id="@+id/totalCaloriesLabel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total Calories"
+                        android:text="Calories Consumed"
                         android:textColor="#FFFFFF"
                         android:textSize="14sp"/>
                     <TextView
@@ -245,9 +245,9 @@
             <!-- Back Button -->
             <ImageView
                 android:id="@+id/backButton"
-                android:layout_width="40dp"
+                android:layout_width="100dp"
                 android:layout_height="40dp"
-                android:src="@drawable/backbutton_icon"
+                android:src="@drawable/gobackbut"
                 android:contentDescription="Back Button"
                 android:clickable="true"
                 android:focusable="true"

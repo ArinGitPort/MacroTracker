@@ -9,152 +9,246 @@
     android:background="#F5F5F5"
     tools:context=".editmacros">
 
+    <!-- Header Section (Pinned to the top) -->
+    <LinearLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#464646"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingVertical="36dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Settings"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <!-- Scrollable Content -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="#2C2C2C"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerContainer"
+        app:layout_constraintBottom_toTopOf="@id/footerContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="16dp">
 
+        <!-- Main Content Container -->
         <LinearLayout
-            android:id="@+id/contentContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/loginlayout2"
             android:padding="24dp">
 
-            <!-- Header Section -->
-            <LinearLayout
-                android:id="@+id/headerContainer"
+            <TextView
+                android:id="@+id/usernameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:padding="10dp"
+                android:text="Username"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp"
+                android:textStyle="bold"/>
+
+            <!-- Email Input -->
+            <TextView
+                android:id="@+id/emailInput"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="2dp"
+                android:hint="Email"
+                android:padding="12dp"
+                android:background="@drawable/anotherbox"
+                android:textColor="@color/white"
+                android:textColorHint="#BDBDBD"
+                android:textSize="16sp"/>
+
+            <!-- Grid Layout Below Email -->
+            <GridLayout
+                android:id="@+id/gridBoxContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:background="@drawable/loginlayout2"
-                android:paddingVertical="36dp"
-                android:layout_marginBottom="24dp">
+                android:columnCount="3"
+                android:rowCount="1"
+                android:layout_marginTop="16dp">
+
+                <!-- Box 1: Daily Logs History -->
+                <LinearLayout
+                    android:id="@+id/dailylogsHistorygridBox1"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="5dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="@drawable/cr14b2e2e2e"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/dailylogsIcon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/dailylogshistory"
+                        android:contentDescription="History Icon"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="History"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <!-- Box 2: Nutrition Settings -->
+                <LinearLayout
+                    android:id="@+id/nutritionSettinggridBox2"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="5dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="@drawable/cr14b2e2e2e"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/nutritionSettingIcon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/nutrition"
+                        android:contentDescription="Nutrition Icon"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nutrition"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+                <!-- Box 3: Support Us -->
+                <LinearLayout
+                    android:id="@+id/buyPremiumgridBox3"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_margin="5dp"
+                    android:layout_columnWeight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:background="@drawable/cr14b2e2e2e"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <ImageView
+                        android:id="@+id/buyPremiumIcon"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:src="@drawable/subscription"
+                        android:contentDescription="Support Us Icon"
+                        android:layout_marginBottom="4dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Support Us"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"/>
+                </LinearLayout>
+
+            </GridLayout>
+
+
+            <!-- New Sharing Section: Feedbox spans full width -->
+            <LinearLayout
+                android:id="@+id/shareContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="16dp"
+                android:padding="8dp">
 
                 <TextView
-                    android:id="@+id/titleTextView"
+                    android:id="@+id/shareText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:background="@drawable/cr14b2e2e2e"
-                    android:text="Profile"
+                    android:layout_marginEnd="8dp"
+                    android:text="Share your feedback with us!"
                     android:textColor="#FFFFFF"
-                    android:textSize="28sp"
-                    android:textStyle="bold"/>
-            </LinearLayout>
+                    android:textSize="16sp"/>
 
-            <!-- Username Label -->
-            <TextView
-                android:id="@+id/usernameLabel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Username"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Weight Input -->
-            <EditText
-                android:id="@+id/weightInput"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Enter weight (kg)"
-                android:inputType="numberDecimal"
-                android:background="@drawable/settings_input_field"
-                android:textColor="@color/black"
-                android:textColorHint="#BDBDBD"
-                android:textSize="16sp"
-                android:padding="12dp"
-                android:elevation="2dp"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Height Input -->
-            <EditText
-                android:id="@+id/heightInput"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Enter height (cm)"
-                android:inputType="numberDecimal"
-                android:background="@drawable/settings_input_field"
-                android:textColor="@color/black"
-                android:textColorHint="#BDBDBD"
-                android:textSize="16sp"
-                android:padding="12dp"
-                android:elevation="2dp"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- Activity Level Spinner -->
-            <Spinner
-                android:id="@+id/activityLevelSpinner"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/spinner_field"
-                android:layout_marginBottom="20dp"
-                android:padding="10dp"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:entries="@array/activity_levels"/>
-
-            <!-- Calculate Calories Button -->
-            <Button
-                android:id="@+id/calculateCaloriesButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Calculate Calories"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                android:background="@drawable/button_cancel_bg"
-                android:textColor="#FFFFFF"
-                android:paddingVertical="12dp"
-                android:elevation="4dp"
-                android:layout_marginBottom="20dp"/>
-
-            <!-- Logout Button -->
-            <Button
-                android:id="@+id/saveButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Logout"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:backgroundTint="@null"
-                android:background="@drawable/button_confirm_bg"
-                android:textColor="#FFFFFF"
-                android:paddingVertical="12dp"
-                android:elevation="4dp"
-                android:layout_marginBottom="20dp"/>
-
-            <!-- Footer Section (Back Button) -->
-            <LinearLayout
-                android:id="@+id/footerContainer"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:orientation="vertical"
-                android:background="@drawable/loginlayout2"
-                android:gravity="center"
-                android:layout_marginTop="20dp">
-
-                <ImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/backbutton_icon"
-                    android:contentDescription="Back Button"
-                    android:clickable="true"
-                    android:focusable="true"/>
+                <Button
+                    android:id="@+id/shareButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/black"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:text="Share"
+                    android:textColor="#FFFFFF"/>
             </LinearLayout>
 
         </LinearLayout>
+
     </ScrollView>
+
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/logoutButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Logout"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:backgroundTint="@null"
+        android:background="@drawable/button_confirm_bg"
+        android:textColor="#FFFFFF"
+        android:paddingVertical="12dp"
+        android:elevation="4dp"
+        android:layout_marginBottom="90dp"
+        android:layout_marginStart="150dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <!-- Footer Section (Back Button) -->
+    <LinearLayout
+        android:id="@+id/footerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:background="#464646"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:src="@drawable/gobackbut"
+            android:contentDescription="Back Button"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

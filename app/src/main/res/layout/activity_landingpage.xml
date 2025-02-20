@@ -45,7 +45,7 @@
 						android:layout_width="wrap_content"
 						android:layout_height="wrap_content"
 						android:layout_marginBottom="16dp"
-						android:text="Calories"
+						android:text="Available Calories"
 						android:textColor="#FFFFFF"
 						android:textSize="14sp" />
 
@@ -268,130 +268,99 @@
 				android:id="@+id/iconButtonParent"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:gravity="center_vertical"
-				android:layout_marginBottom="7dp"
-				android:orientation="horizontal">
+				android:gravity="center"
+				android:orientation="horizontal"
+				android:layout_marginBottom="7dp">
 
-				<!-- Empty space on the left -->
-				<View
+				<!-- Macros Icon + Text -->
+				<LinearLayout
+					android:id="@+id/macrosContainer"
 					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_weight="1" />
-
-				<!-- Macros Icon -->
-				<ImageView
-					android:id="@+id/macrosIconImage"
-					android:layout_width="59dp"
-					android:layout_height="51dp"
-					android:scaleType="fitXY"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:gravity="center"
+					android:orientation="vertical"
 					android:clickable="true"
-					android:focusable="true"
-					android:src="@drawable/macrosicon" />
+					android:focusable="true">
 
-				<!-- Spacer between icons -->
-				<View
+					<ImageView
+						android:id="@+id/macrosIconImage"
+						android:layout_width="59dp"
+						android:layout_height="51dp"
+						android:scaleType="fitXY"
+						android:src="@drawable/macrosicon" />
+
+					<TextView
+						android:id="@+id/macroTextView"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Macros"
+						android:textColor="#FFFFFF"
+						android:textSize="11sp"
+						android:gravity="center"
+						android:paddingTop="2dp"/>
+				</LinearLayout>
+
+				<!-- Scanner Icon + Text -->
+				<LinearLayout
+					android:id="@+id/scannerContainer"
 					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_weight="1" />
-
-				<!-- Scanner Icon -->
-				<ImageView
-					android:id="@+id/barcodeScannerIconImage"
-					android:layout_width="52dp"
-					android:layout_height="51dp"
-					android:scaleType="fitXY"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:gravity="center"
+					android:orientation="vertical"
 					android:clickable="true"
-					android:focusable="true"
-					android:src="@drawable/scanicon" />
+					android:focusable="true">
 
-				<!-- Spacer between icons -->
-				<View
+					<ImageView
+						android:id="@+id/barcodeScannerIconImage"
+						android:layout_width="52dp"
+						android:layout_height="51dp"
+						android:scaleType="fitXY"
+						android:src="@drawable/usergear" />
+
+					<TextView
+						android:id="@+id/barcodeTextView"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Settings"
+						android:textColor="#FFFFFF"
+						android:textSize="11sp"
+						android:gravity="center"
+						android:paddingTop="2dp"/>
+				</LinearLayout>
+
+				<!-- Logs Icon + Text -->
+				<LinearLayout
+					android:id="@+id/logsContainer"
 					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_weight="1" />
-
-				<!-- Logs Icon -->
-				<ImageView
-					android:id="@+id/dailyLogsIconImage"
-					android:layout_width="59dp"
-					android:layout_height="51dp"
-					android:scaleType="fitXY"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:gravity="center"
+					android:orientation="vertical"
 					android:clickable="true"
-					android:focusable="true"
-					android:src="@drawable/logsicon" />
+					android:focusable="true">
 
-				<!-- Empty space on the right -->
-				<View
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_weight="1" />
+					<ImageView
+						android:id="@+id/dailyLogsIconImage"
+						android:layout_width="59dp"
+						android:layout_height="51dp"
+						android:scaleType="fitXY"
+						android:src="@drawable/logsicon" />
+
+					<TextView
+						android:id="@+id/logsTextView"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Logs"
+						android:textColor="#FFFFFF"
+						android:textSize="11sp"
+						android:gravity="center"
+						android:paddingTop="2dp"/>
+				</LinearLayout>
+
 			</LinearLayout>
 
-
-			<LinearLayout
-				android:id="@+id/iconTextViewParent"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:gravity="center_vertical"
-				android:orientation="horizontal">
-
-				<!-- Spacer for Left Alignment -->
-				<View
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_weight="0.9" /> <!-- Slightly larger weight -->
-
-				<!-- Macros Text -->
-				<TextView
-					android:id="@+id/macroTextView"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Macros"
-					android:textColor="#FFFFFF"
-					android:textSize="11sp"
-					android:paddingTop="2dp"
-				android:layout_marginEnd="4dp" />
-
-				<!-- Spacer Between Macros and Scanner -->
-				<View
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_weight="1" />
-
-				<!-- Scan Text -->
-				<TextView
-					android:id="@+id/barcodeTextView"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Scan"
-					android:textColor="#FFFFFF"
-					android:textSize="11sp"
-					android:paddingTop="2dp"
-				android:layout_marginEnd="4dp" />
-
-				<!-- Spacer Between Scanner and Logs -->
-				<View
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_weight="1" /> <!-- Slightly smaller weight -->
-
-				<!-- Logs Text -->
-				<TextView
-					android:id="@+id/logsTextView"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Logs"
-					android:textColor="#FFFFFF"
-					android:textSize="13sp"
-					android:paddingTop="2dp"
-					android:layout_marginStart="4dp" />
-
-				<!-- Spacer for Right Alignment -->
-				<View
-					android:layout_width="0dp"
-					android:layout_height="0dp"
-					android:layout_weight="0.9" /> <!-- Slightly larger weight -->
-			</LinearLayout>
 
 
 

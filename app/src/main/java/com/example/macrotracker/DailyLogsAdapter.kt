@@ -42,7 +42,7 @@ class DailyLogsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val food = loggedFoods[position]
-        holder.foodName.text = food.name
+        holder.foodName.text = "Food: ${food.name}"
         holder.calories.text = "Calories: ${food.calories} kcal"
         holder.protein.text = "Protein: ${food.protein}g"
         holder.carbs.text = "Carbs: ${food.carbs}g"

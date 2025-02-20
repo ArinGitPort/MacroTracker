@@ -53,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:textStyle="bold"
                 android:layout_marginBottom="11dp"
                 android:text="CALORIES"
                 android:textColor="#FFFFFF"
@@ -75,7 +76,7 @@
                     android:gravity="center"
                     android:hint="Enter Calories"
                     android:inputType="number"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:textColorHint="#B0B0B0"
                 android:textSize="16sp"/>
 
@@ -98,6 +99,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:text="MACROS"
+                    android:textStyle="bold"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"/>
                 <TextView
@@ -105,6 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="VALUES"
+                    android:textStyle="bold"
                     android:textColor="#FFFFFF"
                     android:textSize="16sp"/>
             </LinearLayout>
@@ -151,7 +154,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="number"
                     android:paddingVertical="10dp"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:textColorHint="#B0B0B0"
                     android:textSize="16sp"/>
             </LinearLayout>
@@ -245,7 +248,7 @@
                     android:imeOptions="actionDone"
                     android:inputType="number"
                     android:paddingVertical="10dp"
-                    android:textColor="#000000"
+                    android:textColor="#FFFFFF"
                     android:textColorHint="#B0B0B0"
                     android:textSize="16sp"/>
             </LinearLayout>
@@ -279,9 +282,9 @@
                 android:layout_marginTop="20dp">
                 <ImageView
                     android:id="@+id/backButton"
-                    android:layout_width="60dp"
+                    android:layout_width="150dp"
                     android:layout_height="60dp"
-                    android:src="@drawable/backbutton_icon"
+                    android:src="@drawable/gobackbut"
                     android:contentDescription="Back Button"
                     android:clickable="true"
                     android:focusable="true" />

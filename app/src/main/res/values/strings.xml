@@ -9,4 +9,12 @@
         <item>Super Active (twice/day workouts)</item>
     </string-array>
 
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+        <item>Prefer not to say</item>
+    </string-array>
+
+
 </resources>
