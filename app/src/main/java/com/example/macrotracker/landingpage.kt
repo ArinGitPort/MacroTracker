@@ -89,7 +89,7 @@ class landingpage : AppCompatActivity() {
 			startActivity(Intent(this, editmacros::class.java))
 		}
 
-		binding.macrosIconImage.setOnClickListener {
+		binding.barcodeScannerIconImage.setOnClickListener {
 			startActivity(Intent(this, userprofile::class.java))
 		}
 

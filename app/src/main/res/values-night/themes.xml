@@ -1,13 +1,27 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.MacroTracker" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
+        <!-- Status bar settings -->
         <item name="android:statusBarColor">@color/black</item>
         <item name="android:windowLightStatusBar">false</item> <!-- Ensures white icons on black status bar -->
+
+        <!-- Set default text color to white -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 
+    <!-- Light Mode Theme -->
+    <style name="Theme.MacroTracker.Light" parent="Base.Theme.MacroTracker">
+        <item name="android:colorBackground">@color/white</item>
+        <item name="android:textColorPrimary">@color/black</item> <!-- Make sure to override for specific views -->
+    </style>
+
+    <!-- Dark Mode Theme -->
+    <style name="Theme.MacroTracker.Dark" parent="Base.Theme.MacroTracker">
+        <item name="android:colorBackground">@color/black</item>
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+
+    <!-- Auto-switching theme (default) -->
     <style name="Theme.MacroTracker" parent="Base.Theme.MacroTracker" />
-
-
-
 </resources>

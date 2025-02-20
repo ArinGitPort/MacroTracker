@@ -6,7 +6,7 @@
     android:id="@+id/editmacrosLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F5F5F5"
     tools:context=".editmacros">
 
     <ScrollView
@@ -17,23 +17,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="16dp">
 
         <LinearLayout
             android:id="@+id/contentContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@drawable/loginlayout2"
+            android:padding="24dp">
 
+            <!-- Header Section -->
             <LinearLayout
                 android:id="@+id/headerContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:background="#464646"
+                android:background="@drawable/loginlayout2"
                 android:paddingVertical="36dp"
-                android:layout_marginBottom="34dp">
+                android:layout_marginBottom="24dp">
+
                 <TextView
                     android:id="@+id/titleTextView"
                     android:layout_width="wrap_content"
@@ -42,52 +47,104 @@
                     android:background="@drawable/cr14b2e2e2e"
                     android:text="Profile"
                     android:textColor="#FFFFFF"
-                    android:textSize="28sp"/>
+                    android:textSize="28sp"
+                    android:textStyle="bold"/>
             </LinearLayout>
 
+            <!-- Username Label -->
             <TextView
                 android:id="@+id/usernameLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:layout_marginBottom="11dp"
                 android:text="Username"
                 android:textColor="#FFFFFF"
-                android:textSize="16sp"/>
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp"/>
 
-            <LinearLayout
-                android:id="@+id/caloriesInputContainer"
+            <!-- Weight Input -->
+            <EditText
+                android:id="@+id/weightInput"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Enter weight (kg)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/settings_input_field"
+                android:textColor="@color/black"
+                android:textColorHint="#BDBDBD"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:elevation="2dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Height Input -->
+            <EditText
+                android:id="@+id/heightInput"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Enter height (cm)"
+                android:inputType="numberDecimal"
+                android:background="@drawable/settings_input_field"
+                android:textColor="@color/black"
+                android:textColorHint="#BDBDBD"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:elevation="2dp"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Activity Level Spinner -->
+            <Spinner
+                android:id="@+id/activityLevelSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/spinner_field"
+                android:layout_marginBottom="20dp"
+                android:padding="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:entries="@array/activity_levels"/>
+
+            <!-- Calculate Calories Button -->
+            <Button
+                android:id="@+id/calculateCaloriesButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"/>
+                android:text="Calculate Calories"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                android:background="@drawable/button_cancel_bg"
+                android:textColor="#FFFFFF"
+                android:paddingVertical="12dp"
+                android:elevation="4dp"
+                android:layout_marginBottom="20dp"/>
 
-
-            <LinearLayout
-                android:id="@+id/saveButtonContainer"
+            <!-- Logout Button -->
+            <Button
+                android:id="@+id/saveButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="Logout"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:backgroundTint="@null"
+                android:background="@drawable/button_confirm_bg"
+                android:textColor="#FFFFFF"
+                android:paddingVertical="12dp"
+                android:elevation="4dp"
+                android:layout_marginBottom="20dp"/>
+
+            <!-- Footer Section (Back Button) -->
+            <LinearLayout
+                android:id="@+id/footerContainer"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:background="@drawable/loginlayout2"
                 android:gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="10dp">
-                <Button
-                    android:id="@+id/saveButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingVertical="10dp"
-                    android:paddingHorizontal="44dp"
-                    android:text="Logout"
-                    android:textColor="#FFFFFF"
-                    android:backgroundTint="@color/black"
-                    android:textSize="16sp"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/backButtonParent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:layout_marginTop="20dp">
+
                 <ImageView
                     android:id="@+id/backButton"
                     android:layout_width="60dp"
@@ -95,7 +152,7 @@
                     android:src="@drawable/backbutton_icon"
                     android:contentDescription="Back Button"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"/>
             </LinearLayout>
 
         </LinearLayout>
