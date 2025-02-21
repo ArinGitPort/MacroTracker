@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/roundcorner"
     android:layout_marginBottom="8dp"
     android:elevation="4dp"
+    android:padding="8dp"
     >
 
     <!-- Food Name -->
@@ -21,17 +21,17 @@
         android:textStyle="bold"
         android:paddingBottom="4dp"/>
 
+    <!-- Log Date -->
     <TextView
-        android:id="@+id/timestamp"
+        android:id="@+id/logDateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TimeStamp"
-        android:textSize="16sp"
+        android:text="Logged on: Feb 19, 2025, 6:00 PM"
+        android:textSize="14sp"
         android:textColor="#000000"
-        android:textStyle="bold"
         android:paddingBottom="4dp"/>
 
-
+    <!-- Macronutrients Row 1 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
             android:textColor="#000000"/>
     </LinearLayout>
 
-    <!-- Macronutrients Row 2: Carbs & Fats -->
+    <!-- Macronutrients Row 2 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,49 +82,13 @@
             android:textColor="#000000"/>
     </LinearLayout>
 
-    <!-- Serving & Buttons Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!-- Serving -->
+    <TextView
+        android:id="@+id/serving"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/serving"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Serving: 1 serving"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            android:gravity="center_vertical"/>
-
-
-        <!-- Remove Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/deleteButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remove"
-            android:textColor="#FFFFFF"
-            android:layout_margin="5dp"
-            android:backgroundTint="#000000"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp"
-            app:cornerRadius="12dp"/>
-
-        <!-- Edit Button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/editButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Edit"
-            android:textColor="#FFFFFF"
-            android:layout_margin="5dp"
-            android:backgroundTint="#000000"
-            android:paddingHorizontal="12dp"
-            android:paddingVertical="4dp"
-            app:cornerRadius="12dp"/>
-    </LinearLayout>
-
+        android:text="Serving: 1 serving"
+        android:textSize="14sp"
+        android:textColor="#000000"
+        android:paddingTop="4dp"/>
 </LinearLayout>

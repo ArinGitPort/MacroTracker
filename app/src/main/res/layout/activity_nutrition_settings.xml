@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginTop="20dp"
             android:background="@drawable/roundcornerblack"
             android:padding="24dp">
 
@@ -75,21 +76,18 @@
                 android:layout_marginBottom="16dp"
                 android:entries="@array/gender_options"/>
 
-            <!-- Today's Weight -->
-            <EditText
-                android:id="@+id/todaysWeightInput"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Today's Weight (kg)"
-                android:inputType="numberDecimal"
-                android:background="@drawable/settings_input_field"
-                android:textColor="@color/black"
-                android:textColorHint="#BDBDBD"
-                android:textSize="16sp"
-                android:padding="12dp"
-                android:layout_marginBottom="16dp"/>
 
             <!-- Goal Weight -->
+            <Spinner
+                android:id="@+id/exerciseFrequencySpinner"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/spinner_field"
+                android:entries="@array/activity_levels"
+                android:padding="10dp"
+                android:textSize="16sp" />
+
             <EditText
                 android:id="@+id/goalWeightInput"
                 android:layout_width="match_parent"
@@ -104,15 +102,6 @@
                 android:layout_marginBottom="16dp"/>
 
             <!-- Exercise Frequency Spinner -->
-            <Spinner
-                android:id="@+id/exerciseFrequencySpinner"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@drawable/spinner_field"
-                android:padding="10dp"
-                android:textSize="16sp"
-                android:layout_marginBottom="16dp"
-                android:entries="@array/activity_levels"/>
 
             <!-- Save Button -->
             <Button
@@ -129,16 +118,28 @@
                 android:elevation="4dp"
                 android:layout_marginBottom="20dp"/>
 
-            <!-- Back Button -->
-            <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="150dp"
-                android:layout_height="60dp"
-                android:src="@drawable/gobackbut"
-                android:contentDescription="Back Button"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_gravity="center_horizontal"/>
+
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/footerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:background="#464646"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:src="@drawable/gobackbut"
+            android:contentDescription="Back Button"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

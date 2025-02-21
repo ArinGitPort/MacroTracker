@@ -20,9 +20,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:textStyle="bold"
             android:textColor="#000000"
-            android:textSize="16sp"
-            android:padding="8dp" />
+            android:hint="Food"
+            android:textSize="16sp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addButton"

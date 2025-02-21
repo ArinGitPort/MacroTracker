@@ -273,23 +273,30 @@
                     android:textSize="16sp"/>
             </LinearLayout>
 
-            <!-- Back Button Container -->
-            <LinearLayout
-                android:id="@+id/backButtonParent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:layout_marginTop="20dp">
-                <ImageView
-                    android:id="@+id/backButton"
-                    android:layout_width="150dp"
-                    android:layout_height="60dp"
-                    android:src="@drawable/gobackbut"
-                    android:contentDescription="Back Button"
-                    android:clickable="true"
-                    android:focusable="true" />
-            </LinearLayout>
 
         </LinearLayout>
+
+
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/footerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:background="#464646"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:src="@drawable/gobackbut"
+            android:contentDescription="Back Button"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,7 +37,6 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:background="@drawable/roundcornerblack"
-                android:paddingVertical="16dp"
                 android:paddingHorizontal="12dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginHorizontal="8dp"
@@ -82,7 +81,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:paddingVertical="12dp"
                     android:paddingHorizontal="20dp">
                     <TextView
                         android:id="@+id/macrosLabel"
@@ -97,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:text="Protein: 0"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         android:layout_marginTop="4dp"/>
                     <TextView
                         android:id="@+id/carbsRemaining"
@@ -105,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:text="Carbs: 0"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         android:layout_marginTop="4dp"/>
                     <TextView
                         android:id="@+id/fatRemaining"
@@ -113,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:text="Fat: 0"
                         android:textColor="#FFFFFF"
-                        android:textSize="12sp"
+                        android:textSize="14sp"
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
             </LinearLayout>
@@ -132,16 +130,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:background="@drawable/roundcornerblack"
-                    android:padding="10dp"
                     android:gravity="center_vertical">
 
                     <TextView
                         android:id="@+id/macrosBreakdownLabel"
                         android:layout_width="wrap_content"
-                        android:layout_height="30dp"
+                        android:layout_height="25dp"
                         android:text="Consumed Macro Breakdown"
                         android:textColor="#FFFFFF"
                         android:textSize="16sp"
+                        android:layout_gravity="center_horizontal"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:layout_marginBottom="8dp"/>
@@ -151,8 +149,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingVertical="6dp">
+                        android:gravity="center_vertical">
                         <TextView
                             android:id="@+id/proteinTextView"
                             android:layout_width="0dp"
@@ -175,8 +172,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingVertical="6dp">
+                        android:gravity="center_vertical">
                         <TextView
                             android:id="@+id/carbsTextView"
                             android:layout_width="0dp"
@@ -199,8 +195,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:paddingVertical="6dp">
+                        android:gravity="center_vertical">
                         <TextView
                             android:id="@+id/fatTextView"
                             android:layout_width="0dp"
@@ -237,22 +232,34 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dailyFoodRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="350dp"
+                android:layout_height="430dp"
                 android:clipToPadding="false"
                 android:padding="8dp"
                 tools:listitem="@layout/item_dailylog"/>
 
-            <!-- Back Button -->
-            <ImageView
-                android:id="@+id/backButton"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:src="@drawable/gobackbut"
-                android:contentDescription="Back Button"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center"/>
+
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/footerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="vertical"
+        android:background="#464646"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backButton"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:src="@drawable/gobackbut"
+            android:contentDescription="Back Button"
+            android:clickable="true"
+            android:focusable="true"/>
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

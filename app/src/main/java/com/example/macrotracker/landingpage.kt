@@ -147,36 +147,42 @@ class landingpage : AppCompatActivity() {
 	 * Resets all daily logs and macro goals in Firestore.
 	 */
 	private fun resetAllData() {
-		// 1. Delete all documents in "daily_logs"
+		val db = FirebaseFirestore.getInstance()
+
+		// Get today's date for history records
+		val resetTimestamp = Timestamp.now()
+
 		db.collection("daily_logs").get()
 			.addOnSuccessListener { documents ->
 				val batch = db.batch()
+
 				for (doc in documents) {
+					val foodData = doc.data.toMutableMap()
+					foodData["resetDate"] = resetTimestamp // Store reset date
+
+					// Save the data to "daily_logs_history"
+					val historyRef = db.collection("daily_logs_history").document()
+					batch.set(historyRef, foodData)
+
+					// Delete from current logs
 					batch.delete(doc.reference)
 				}
+
 				batch.commit().addOnSuccessListener {
-					Toast.makeText(this, "Daily logs reset", Toast.LENGTH_SHORT).show()
-					fetchAndComputeRemainingMacros() // Update UI after reset
+					Toast.makeText(this, "Daily logs reset & archived", Toast.LENGTH_SHORT).show()
+
+					// Navigate to Daily Logs History after reset
+					startActivity(Intent(this, daily_logs_history::class.java))
+					finish()
 				}.addOnFailureListener {
-					Toast.makeText(this, "Failed to reset daily logs", Toast.LENGTH_SHORT).show()
+					Toast.makeText(this, "Failed to reset logs", Toast.LENGTH_SHORT).show()
 				}
 			}
 			.addOnFailureListener {
 				Toast.makeText(this, "Error resetting daily logs", Toast.LENGTH_SHORT).show()
 			}
-
-		// 2. Reset macros in "userMacros" (here, setting to 0 for all values; adjust as needed)
-		val defaultMacros = Macros(0, 0, 0, 0)
-		db.collection("userMacros").document("macros")
-			.set(defaultMacros)
-			.addOnSuccessListener {
-				Toast.makeText(this, "Macros reset", Toast.LENGTH_SHORT).show()
-				fetchAndComputeRemainingMacros()
-			}
-			.addOnFailureListener {
-				Toast.makeText(this, "Failed to reset macros", Toast.LENGTH_SHORT).show()
-			}
 	}
+
 
 	/**
 	 * Stores selected food in Firestore.
