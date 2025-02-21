@@ -12,15 +12,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class editmacros : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_editmacros)
+        // Apply edge-to-edge padding to the root layout
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.editmacrosLayout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -28,6 +31,7 @@ class editmacros : AppCompatActivity() {
         }
 
         db = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         // Link EditTexts for user inputs
         val caloriesInput = findViewById<EditText>(R.id.caloriesInput)
@@ -35,12 +39,35 @@ class editmacros : AppCompatActivity() {
         val carbsInput = findViewById<EditText>(R.id.carbsInput)
         val fatsInput = findViewById<EditText>(R.id.fatsInput)
 
-        // Auto-calculate default macros when calories change (if no macro field is currently focused)
+        // Fetch existing macros from Firestore so the user sees their current values
+        val uid = auth.currentUser?.uid
+        if (uid != null) {
+            db.collection("users").document(uid)
+                .collection("userMacros").document("macros")
+                .get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val macros = document.toObject(Macros::class.java)
+                        if (macros != null) {
+                            caloriesInput.setText(macros.calories.toString())
+                            proteinInput.setText(macros.protein.toString())
+                            carbsInput.setText(macros.carbs.toString())
+                            fatsInput.setText(macros.fats.toString())
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, "Error fetching macros", Toast.LENGTH_SHORT).show()
+                    e.printStackTrace()
+                }
+        }
+
+        // Auto-calculate default macros when calories change (if no macro field is focused)
         caloriesInput.addTextChangedListener(object : android.text.TextWatcher {
             override fun afterTextChanged(s: Editable?) { }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!proteinInput.isFocused() && !carbsInput.isFocused() && !fatsInput.isFocused()) {
+                if (!proteinInput.isFocused && !carbsInput.isFocused && !fatsInput.isFocused) {
                     val calStr = s.toString()
                     if (calStr.isNotEmpty()) {
                         val totalCals = calStr.toIntOrNull() ?: 0
@@ -84,7 +111,7 @@ class editmacros : AppCompatActivity() {
             } else false
         }
 
-        // Save button
+        // Save button functionality
         val saveButton = findViewById<Button>(R.id.saveButton)
         saveButton.setOnClickListener {
             val calStr = caloriesInput.text.toString()
@@ -103,20 +130,24 @@ class editmacros : AppCompatActivity() {
             val f = fStr.toInt()
 
             val macros = Macros(cal, p, c, f)
-            db.collection("userMacros").document("macros")
-                .set(macros)
-                .addOnSuccessListener {
-                    Toast.makeText(this, "Macros updated", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this, landingpage::class.java))
-                    finish()
-                }
-                .addOnFailureListener { e ->
-                    Toast.makeText(this, "Failed to update macros", Toast.LENGTH_SHORT).show()
-                    e.printStackTrace()
-                }
+            // Save computed macros under users/{uid}/userMacros/macros
+            if (uid != null) {
+                db.collection("users").document(uid)
+                    .collection("userMacros").document("macros")
+                    .set(macros)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Macros updated", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this, landingpage::class.java))
+                        finish()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Failed to update macros", Toast.LENGTH_SHORT).show()
+                        e.printStackTrace()
+                    }
+            }
         }
 
-        // Back button
+        // Back button functionality
         val backButton = findViewById<ImageView>(R.id.backButton)
         backButton.setOnClickListener {
             startActivity(Intent(this, landingpage::class.java))

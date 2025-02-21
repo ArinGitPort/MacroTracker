@@ -9,7 +9,7 @@ import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 
-class dailylogshistoryAdapter(private val foodList: List<FoodItem>) :
+class dailylogshistoryAdapter(private var foodList: List<FoodItem>) :
     RecyclerView.Adapter<dailylogshistoryAdapter.ViewHolder>() {
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -23,7 +23,7 @@ class dailylogshistoryAdapter(private val foodList: List<FoodItem>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        // Inflate the adapter layout (dailylogshistory_adapter.xml)
+        // Make sure your adapter XML is named "activity_dailylogshistory_adapter.xml"
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.activity_dailylogshistory_adapter, parent, false)
         return ViewHolder(view)
@@ -42,10 +42,16 @@ class dailylogshistoryAdapter(private val foodList: List<FoodItem>) :
 
     override fun getItemCount(): Int = foodList.size
 
+    fun updateList(newList: List<FoodItem>) {
+        foodList = newList
+        notifyDataSetChanged()
+    }
+
     private fun formatTimestamp(timestamp: Timestamp?): String {
         return if (timestamp != null) {
             val date = timestamp.toDate()
             val sdf = SimpleDateFormat("MMM dd, yyyy, h:mm a", Locale.getDefault())
+            sdf.timeZone = TimeZone.getTimeZone("Asia/Manila")
             "Logged on: " + sdf.format(date)
         } else {
             "No Date"

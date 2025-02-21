@@ -25,7 +25,7 @@ class NutritionSettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nutrition_settings)
 
-        // Initialize Firebase components
+        // Initialize Firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
@@ -46,7 +46,7 @@ class NutritionSettingsActivity : AppCompatActivity() {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
         }
 
-        // When Save is clicked, update the user's nutrition settings in Firestore
+        // Save settings when Save is clicked
         saveButton.setOnClickListener {
             if (userId != null) {
                 saveUserNutritionData(userId)
@@ -60,17 +60,17 @@ class NutritionSettingsActivity : AppCompatActivity() {
         }
     }
 
-    // Fetch existing nutrition data and fill the fields.
+    /**
+     * Fetches existing nutrition settings for the given user and populates the fields.
+     */
     private fun fetchUserNutritionData(userId: String) {
         db.collection("users").document(userId).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    // Populate the fields with saved data
                     heightInput.setText(document.getString("height"))
                     weightInput.setText(document.getString("weight"))
                     goalWeightInput.setText(document.getString("goalWeight"))
 
-                    // Set the spinner for gender
                     val gender = document.getString("gender")
                     val genderOptions = resources.getStringArray(R.array.gender_options)
                     val genderIndex = genderOptions.indexOf(gender)
@@ -78,7 +78,6 @@ class NutritionSettingsActivity : AppCompatActivity() {
                         genderSpinner.setSelection(genderIndex)
                     }
 
-                    // Set the spinner for exercise frequency
                     val exercise = document.getString("exerciseFrequency")
                     val exerciseOptions = resources.getStringArray(R.array.activity_levels)
                     val exerciseIndex = exerciseOptions.indexOf(exercise)
@@ -86,10 +85,10 @@ class NutritionSettingsActivity : AppCompatActivity() {
                         exerciseFrequencySpinner.setSelection(exerciseIndex)
                     }
 
-                    // Optionally, compute macros after fetching data.
+                    // Optionally, compute macros automatically after fetching settings.
                     computeUserMacros(userId)
                 } else {
-                    Log.d("NutritionSettings", "No user data found.")
+                    Log.d("NutritionSettings", "No user data found. Likely first login.")
                 }
             }
             .addOnFailureListener { e ->
@@ -98,7 +97,9 @@ class NutritionSettingsActivity : AppCompatActivity() {
             }
     }
 
-    // Save the nutrition settings to Firestore.
+    /**
+     * Saves the nutrition settings under users/{userId} and then computes macros.
+     */
     private fun saveUserNutritionData(userId: String) {
         val nutritionData = hashMapOf(
             "height" to heightInput.text.toString(),
@@ -120,23 +121,26 @@ class NutritionSettingsActivity : AppCompatActivity() {
             }
     }
 
-    // Example function to compute macros (calories, protein, carbs, fats) using basic formulas.
+    /**
+     * Computes the user's macro goals (calories, protein, carbs, fats) using the Mifflin-St Jeor Equation
+     * and target percentages (approx. 32% protein, 42% carbs, 26% fat), then saves the result under
+     * users/{userId}/userMacros/macros.
+     */
     private fun computeUserMacros(userId: String) {
         val height = heightInput.text.toString().toDoubleOrNull() ?: 0.0
         val weight = weightInput.text.toString().toDoubleOrNull() ?: 0.0
-        val age = 25 // Replace with an input or retrieve from user profile if available
+        val age = 25 // Replace with a user input if available
 
         val gender = genderSpinner.selectedItem.toString()
         val exerciseLevel = exerciseFrequencySpinner.selectedItem.toString()
 
-        // Calculate Basal Metabolic Rate (BMR) using the Mifflin-St Jeor Equation
+        // Calculate BMR using the Mifflin-St Jeor Equation
         val bmr = if (gender.equals("Male", ignoreCase = true)) {
             10 * weight + 6.25 * height - 5 * age + 5
         } else {
             10 * weight + 6.25 * height - 5 * age - 161
         }
 
-        // Determine activity factor based on exercise frequency
         val activityFactor = when (exerciseLevel) {
             "Sedentary (Little to no exercise)" -> 1.2
             "Lightly Active (1-3 days/week)" -> 1.375
@@ -146,23 +150,25 @@ class NutritionSettingsActivity : AppCompatActivity() {
             else -> 1.2
         }
 
-        // Compute daily calorie needs
         val dailyCalories = (bmr * activityFactor).toInt()
 
-        // Example macros: protein (g), carbs (g), fats (g)
-        val protein = (weight * 2.2).toInt()         // Rough estimate: 2.2 grams per kg
-        val carbs = (dailyCalories * 0.5 / 4).toInt()  // 50% of calories from carbs (4 cal per gram)
-        val fats = (dailyCalories * 0.3 / 9).toInt()   // 30% of calories from fat (9 cal per gram)
+        // Updated macro calculation using target percentages:
+        val computedProtein = (dailyCalories * 0.32 / 4).toInt()
+        val computedCarbs = (dailyCalories * 0.42 / 4).toInt()
+        val computedFats = (dailyCalories * 0.26 / 9).toInt()
 
-        // Save computed macros to Firestore under a separate collection "userMacros"
+        // Recalculate total calories from macros to ensure consistency
+        val totalCalories = computedProtein * 4 + computedCarbs * 4 + computedFats * 9
+
         val updatedMacros = hashMapOf(
-            "calories" to dailyCalories,
-            "protein" to protein,
-            "carbs" to carbs,
-            "fats" to fats
+            "calories" to totalCalories,
+            "protein" to computedProtein,
+            "carbs" to computedCarbs,
+            "fats" to computedFats
         )
 
-        db.collection("userMacros").document(userId)
+        db.collection("users").document(userId)
+            .collection("userMacros").document("macros")
             .set(updatedMacros)
             .addOnSuccessListener {
                 Log.d("NutritionSettings", "Macros updated successfully")

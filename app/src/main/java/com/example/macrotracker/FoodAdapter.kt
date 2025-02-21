@@ -4,20 +4,16 @@ import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.RadioButton
-import android.widget.RadioGroup
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 
 class FoodAdapter(
-    private val foodList: List<FoodItem>,
+    private var foodList: List<FoodItem>,
     private val onAddClick: (FoodItem, Double, String) -> Unit
 ) : RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
 
-    class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class FoodViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val foodName: TextView = itemView.findViewById(R.id.foodName)
         val addButton: Button = itemView.findViewById(R.id.addButton)
         val caloriesText: TextView = itemView.findViewById(R.id.caloriesText)
@@ -40,7 +36,7 @@ class FoodAdapter(
         holder.carbsText.text = "Carbs: ${food.carbs}g"
         holder.fatsText.text = "Fats: ${food.fats}g"
 
-        // Open measurement selection dialog
+        // Show the measurement selection dialog when add button is clicked.
         holder.addButton.setOnClickListener {
             showMeasurementDialog(holder.itemView, food)
         }
@@ -49,12 +45,19 @@ class FoodAdapter(
     override fun getItemCount(): Int = foodList.size
 
     /**
-     * Show a custom dialog for selecting measurement type and entering value.
+     * Updates the list shown by the adapter.
+     */
+    fun updateList(newList: List<FoodItem>) {
+        foodList = newList
+        notifyDataSetChanged()
+    }
+
+    /**
+     * Displays a custom dialog for selecting the measurement type and entering a value.
      */
     private fun showMeasurementDialog(view: View, food: FoodItem) {
         val context = view.context
         val dialogView = LayoutInflater.from(context).inflate(R.layout.add_serving_dialog, null)
-
         val radioGroup = dialogView.findViewById<RadioGroup>(R.id.radioGroup)
         val servingRadio = dialogView.findViewById<RadioButton>(R.id.radioServing)
         val gramsRadio = dialogView.findViewById<RadioButton>(R.id.radioGrams)
@@ -62,31 +65,33 @@ class FoodAdapter(
         val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
         val confirmButton = dialogView.findViewById<Button>(R.id.confirmButton)
 
+        // Set up input to allow decimal values.
         valueInput.inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-        servingRadio.isChecked = true // Default selection
+        // Default selection is "serving"
+        servingRadio.isChecked = true
 
         val dialog = AlertDialog.Builder(context)
             .setView(dialogView)
             .create()
 
-        // Cancel Button
         cancelButton.setOnClickListener {
             dialog.dismiss()
         }
 
-        // Confirm Button
         confirmButton.setOnClickListener {
             val valueStr = valueInput.text.toString()
+            // Use 1.0 as default if no input provided.
             val multiplier = when {
+                valueStr.isBlank() -> 1.0
                 servingRadio.isChecked -> valueStr.toDoubleOrNull() ?: 1.0
                 gramsRadio.isChecked -> {
+                    // Assume that 100 grams equals 1 serving.
                     val grams = valueStr.toDoubleOrNull() ?: 100.0
                     grams / 100.0
                 }
                 else -> 1.0
             }
             val unit = if (servingRadio.isChecked) "serving" else "g"
-
             onAddClick(food, multiplier, unit)
             dialog.dismiss()
         }

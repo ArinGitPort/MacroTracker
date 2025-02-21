@@ -64,19 +64,7 @@
                 android:textSize="28sp"
                 android:textStyle="bold"/>
 
-            <!-- Email Input -->
-            <TextView
-                android:id="@+id/emailInput"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:elevation="2dp"
-                android:hint="Email"
-                android:padding="12dp"
-                android:background="@drawable/anotherbox"
-                android:textColor="@color/white"
-                android:textColorHint="#BDBDBD"
-                android:textSize="16sp"/>
+
 
             <!-- Grid Layout Below Email -->
             <GridLayout

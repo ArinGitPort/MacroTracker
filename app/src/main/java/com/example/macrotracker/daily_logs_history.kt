@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.macrotracker.databinding.ActivityDailyLogsHistoryBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class daily_logs_history : AppCompatActivity() {
@@ -14,23 +15,32 @@ class daily_logs_history : AppCompatActivity() {
     private val db = FirebaseFirestore.getInstance()
     private val historyLogs = mutableListOf<FoodItem>()
     private lateinit var adapter: dailylogshistoryAdapter
+    private val auth = FirebaseAuth.getInstance()
+    private var userId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Enable edge-to-edge if needed
         enableEdgeToEdge()
         binding = ActivityDailyLogsHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Get current user ID once
+        userId = auth.currentUser?.uid
+        if (userId == null) {
+            Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
 
         // Set up RecyclerView
         binding.dailyLogsRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = dailylogshistoryAdapter(historyLogs)
         binding.dailyLogsRecyclerView.adapter = adapter
 
-        // Fetch history logs from Firestore
+        // Fetch history logs from Firestore from the user's subcollection
         fetchHistoryLogs()
 
-        // Back button functionality: navigate to landingpage
+        // Back button navigates to UserProfile (or adjust as needed)
         binding.backButton.setOnClickListener {
             startActivity(Intent(this, userprofile::class.java))
             finish()
@@ -38,8 +48,10 @@ class daily_logs_history : AppCompatActivity() {
     }
 
     private fun fetchHistoryLogs() {
-        db.collection("daily_logs_history")
-            .orderBy("resetDate") // Adjust sorting as needed
+        val uid = userId ?: return
+        db.collection("users").document(uid)
+            .collection("daily_logs_history")
+            .orderBy("resetDate")
             .get()
             .addOnSuccessListener { documents ->
                 historyLogs.clear()
