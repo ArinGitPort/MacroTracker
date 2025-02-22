@@ -13,14 +13,20 @@
         android:theme="@style/Theme.MacroTracker"
         tools:targetApi="31">
         <activity
+            android:name=".admin_logs"
+            android:exported="true" />
+        <activity
+            android:name=".forgotpass"
+            android:exported="true" />
+        <activity
             android:name=".dailylogshistoryAdapter"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".daily_logs_history"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".support_us_activity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".NutritionSettingsActivity"
             android:exported="true" />

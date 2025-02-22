@@ -2,12 +2,11 @@ package com.example.macrotracker
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,14 +21,15 @@ class userprofile : AppCompatActivity() {
     private lateinit var shareButton: Button
     private lateinit var logoutButton: Button
     private lateinit var backButton: ImageView
-    private lateinit var usernameTextView: TextView
+    // Ensure that the view with id "usernameTextView" in your layout is an EditText
+    private lateinit var usernameEditText: EditText
 
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_userprofile) // Ensure your XML filename matches
+        setContentView(R.layout.activity_userprofile)
 
         // Initialize UI elements
         dailyLogsHistoryBox = findViewById(R.id.dailylogsHistorygridBox1)
@@ -38,7 +38,7 @@ class userprofile : AppCompatActivity() {
         shareButton = findViewById(R.id.shareButton)
         logoutButton = findViewById(R.id.logoutButton)
         backButton = findViewById(R.id.backButton)
-        usernameTextView = findViewById(R.id.usernameTextView)
+        usernameEditText = findViewById(R.id.usernameTextView)
 
         // Fetch and display username from Firestore
         val uid = auth.currentUser?.uid
@@ -46,16 +46,25 @@ class userprofile : AppCompatActivity() {
             db.collection("users").document(uid).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        val username = document.getString("username") ?: "User"
-                        usernameTextView.text = username
+                        // Retrieve the "username" field. If it's empty or equals the UID, use a default value.
+                        val username = document.getString("username")
+                        if (username.isNullOrEmpty() || username == uid) {
+                            usernameEditText.setText("User")
+                        } else {
+                            usernameEditText.setText(username)
+                        }
                     } else {
-                        usernameTextView.text = "New User"
+                        usernameEditText.setText("New User")
                     }
                 }
-                .addOnFailureListener { e ->
+                .addOnFailureListener {
                     Toast.makeText(this, "Error fetching username", Toast.LENGTH_SHORT).show()
-                    Log.e("UserProfile", "Error fetching username", e)
                 }
+        }
+
+        // When the user taps the username field, show the edit username dialog.
+        usernameEditText.setOnClickListener {
+            showEditUsernameDialog()
         }
 
         // Navigation for Daily Logs History
@@ -86,22 +95,40 @@ class userprofile : AppCompatActivity() {
         // Back button: Return to landing page
         backButton.setOnClickListener {
             startActivity(Intent(this, landingpage::class.java))
-            finish() // Close current activity
+            finish()
         }
     }
 
     /**
-     * Displays the feedbox dialog using the layout 'feedbox_dialog.xml'
+     * Displays a dialog to allow the user to edit their username.
+     * The dialog layout is defined in edit_username_dialog.xml.
      */
-    private fun showFeedboxDialog() {
-        val dialogView = LayoutInflater.from(this).inflate(R.layout.feedbox_dialog, null)
+    private fun showEditUsernameDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.edit_username_dialog, null)
+        val usernameInput = dialogView.findViewById<EditText>(R.id.editUsernameInput)
+        // Pre-populate with the current username.
+        usernameInput.setText(usernameEditText.text.toString())
+
         val alertDialog = AlertDialog.Builder(this)
+            .setTitle("Edit Username")
             .setView(dialogView)
             .create()
 
-        // Example: if there's a close button in your feedbox dialog
+        val updateButton = dialogView.findViewById<Button>(R.id.updateButton)
         val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
-        closeButton?.setOnClickListener {
+
+        updateButton.setOnClickListener {
+            val newUsername = usernameInput.text.toString().trim()
+            if (newUsername.isNotEmpty()) {
+                updateUsername(newUsername)
+                usernameEditText.setText(newUsername)
+            } else {
+                Toast.makeText(this, "Username cannot be empty", Toast.LENGTH_SHORT).show()
+            }
+            alertDialog.dismiss()
+        }
+
+        closeButton.setOnClickListener {
             alertDialog.dismiss()
         }
 
@@ -110,7 +137,67 @@ class userprofile : AppCompatActivity() {
     }
 
     /**
-     * Shows a confirmation dialog for logout.
+     * Updates the username in Firestore.
+     */
+    private fun updateUsername(newUsername: String) {
+        val uid = auth.currentUser?.uid ?: return
+        db.collection("users").document(uid)
+            .update("username", newUsername)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Username updated", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to update username", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    /**
+     * Displays the feedbox dialog using the layout 'feedbox_dialog.xml'.
+     * When the user taps "Send", the feedback message is sent to Firestore.
+     */
+    private fun showFeedboxDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.feedbox_dialog, null)
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .create()
+
+        val feedbackInput = dialogView.findViewById<EditText>(R.id.feedbackInput)
+        val sendButton = dialogView.findViewById<Button>(R.id.sendButton)
+        val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+
+        sendButton.setOnClickListener {
+            val feedback = feedbackInput.text.toString().trim()
+            if (feedback.isNotEmpty()) {
+                // Use the username from Firestore if available; here we simply use the uid as fallback.
+                val currentUsername = usernameEditText.text.toString().ifEmpty { "Anonymous" }
+                val feedbackData = hashMapOf(
+                    "username" to currentUsername,
+                    "feedback" to feedback,
+                    "timestamp" to com.google.firebase.Timestamp.now()
+                )
+                db.collection("feedbox").add(feedbackData)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Feedback sent", Toast.LENGTH_SHORT).show()
+                        alertDialog.dismiss()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Failed to send feedback: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                Toast.makeText(this, "Please enter your feedback", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        closeButton.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        alertDialog.show()
+    }
+
+    /**
+     * Shows a confirmation dialog for logout using a custom layout (logout_dialog.xml).
      */
     private fun showLogoutConfirmationDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.logout_dialog, null)
@@ -118,15 +205,12 @@ class userprofile : AppCompatActivity() {
             .setView(dialogView)
             .create()
 
-        // Assume your logout_user_dialog.xml has two buttons with these IDs:
-        // - logoutButton (for confirming logout)
-        // - cancelButton (for cancelling)
         val logoutBtn = dialogView.findViewById<Button>(R.id.confirmButton)
         val cancelBtn = dialogView.findViewById<Button>(R.id.cancelButton)
 
         logoutBtn.setOnClickListener {
             auth.signOut()
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, loginpage::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
@@ -140,5 +224,4 @@ class userprofile : AppCompatActivity() {
         alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
         alertDialog.show()
     }
-
 }

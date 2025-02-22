@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:backgroundTint="@color/gray"
     android:background="@drawable/roundcorner"
     android:layout_marginBottom="8dp"
     android:elevation="4dp"
@@ -17,7 +18,7 @@
         android:layout_height="wrap_content"
         android:text="Food Name"
         android:textSize="16sp"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:paddingBottom="4dp"/>
 
@@ -27,7 +28,7 @@
         android:layout_height="wrap_content"
         android:text="TimeStamp"
         android:textSize="16sp"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:paddingBottom="4dp"/>
 
@@ -44,7 +45,8 @@
             android:layout_weight="1"
             android:text="Calories: 150 kcal"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"
+            />
 
         <TextView
             android:id="@+id/protein"
@@ -53,7 +55,8 @@
             android:layout_weight="1"
             android:text="Protein: 10g"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"
+            />
     </LinearLayout>
 
     <!-- Macronutrients Row 2: Carbs & Fats -->
@@ -70,7 +73,8 @@
             android:layout_weight="1"
             android:text="Carbs: 20g"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"
+            />
 
         <TextView
             android:id="@+id/fats"
@@ -79,7 +83,8 @@
             android:layout_weight="1"
             android:text="Fats: 5g"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"
+            />
     </LinearLayout>
 
     <!-- Serving & Buttons Row -->
@@ -96,7 +101,7 @@
             android:layout_weight="1"
             android:text="Serving: 1 serving"
             android:textSize="14sp"
-            android:textColor="#000000"
+            android:textColor="@color/white"
             android:gravity="center_vertical"/>
 
 

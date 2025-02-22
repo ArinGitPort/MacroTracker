@@ -15,11 +15,14 @@ import com.example.macrotracker.databinding.ActivityLandingpageBinding
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.IOException
+import java.nio.charset.Charset
 import java.util.Calendar
-import java.util.Locale
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
-
 
 class landingpage : AppCompatActivity() {
 	private lateinit var binding: ActivityLandingpageBinding
@@ -27,16 +30,10 @@ class landingpage : AppCompatActivity() {
 	private lateinit var auth: FirebaseAuth
 	private var userId: String? = null
 
-	// Full list and mutable filtered list of food items
-	private val originalFoodItems = listOf(
-		FoodItem("Apple", 95, 0, 25, 0),
-		FoodItem("Banana", 105, 1, 27, 0),
-		FoodItem("Carrot", 41, 1, 10, 0),
-		FoodItem("Eggs", 68, 6, 1, 5),
-		FoodItem("Fish", 140, 20, 0, 6),
-		FoodItem("Grapes", 62, 0, 16, 0)
-	)
-	private val filteredFoodItems = originalFoodItems.toMutableList()
+	// Instead of hardcoded list, these lists will be populated from food.json
+	private var originalFoodItems = mutableListOf<FoodItem>()
+	private var filteredFoodItems = mutableListOf<FoodItem>()
+	private lateinit var foodAdapter: FoodAdapter
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -79,9 +76,12 @@ class landingpage : AppCompatActivity() {
 			checkAndPromptDailyReset()
 		}
 
+		// Load food data from JSON file in assets (ensure file is named "food.json")
+		loadFoodDataFromJson()
+
 		// Set up RecyclerView for food selection
 		binding.mainFoodRecyclerView.layoutManager = LinearLayoutManager(this)
-		val foodAdapter = FoodAdapter(filteredFoodItems) { selectedFood, multiplier, unit ->
+		foodAdapter = FoodAdapter(filteredFoodItems) { selectedFood, multiplier, unit ->
 			val modifiedFood = FoodItem(
 				name = selectedFood.name,
 				calories = (selectedFood.calories * multiplier).toInt(),
@@ -97,14 +97,14 @@ class landingpage : AppCompatActivity() {
 
 		// Filter food list using search bar with proper locale
 		binding.searchBarInput.addTextChangedListener(object : TextWatcher {
-			override fun afterTextChanged(s: Editable?) { }
-			override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+			override fun afterTextChanged(s: Editable?) {}
+			override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 			override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-				val query = s.toString().trim().toLowerCase(Locale.getDefault())
+				val query = s.toString().trim().lowercase(Locale.getDefault())
 				val filtered = originalFoodItems.filter {
-					it.name.toLowerCase(Locale.getDefault()).contains(query)
+					it.name.lowercase(Locale.getDefault()).contains(query)
 				}
-				foodAdapter.updateList(filtered)
+				updateFilteredList(filtered)
 			}
 		})
 
@@ -125,71 +125,44 @@ class landingpage : AppCompatActivity() {
 		}
 	}
 
-	private fun checkAndPromptDailyReset() {
-		val calendar = Calendar.getInstance()
-		val hour = calendar.get(Calendar.HOUR_OF_DAY)
-		if (hour == 0) {
-			showDailyResetDialog()
-		}
-	}
+	/**
+	 * Loads food data from the "food.json" file in the assets folder.
+	 */
+	private fun loadFoodDataFromJson() {
+		try {
+			val inputStream = assets.open("food.json")
+			val size = inputStream.available()
+			val buffer = ByteArray(size)
+			inputStream.read(buffer)
+			inputStream.close()
+			val json = String(buffer, Charset.defaultCharset())
 
-	private fun showDailyResetDialog() {
-		val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_reset_day, null)
-		val alertDialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
-			.setView(dialogView)
-			.create()
-		alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-
-		val confirmButton = dialogView.findViewById<Button>(R.id.confirmButton)
-		val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
-
-		confirmButton.setOnClickListener {
-			resetAllData()
-			alertDialog.dismiss()
-		}
-		cancelButton.setOnClickListener {
-			alertDialog.dismiss()
-		}
-		alertDialog.show()
-	}
-
-	// Reset daily logs: Archive current logs to "daily_logs_history" then delete them from "daily_logs"
-	private fun resetAllData() {
-		val uid = userId ?: return
-		val userRef = db.collection("users").document(uid)
-		val dailyLogsRef = userRef.collection("daily_logs")
-		val historyRef = userRef.collection("daily_logs_history")
-
-		// Get current time and add the Asia/Manila offset (UTC+8, no DST)
-		val offsetMillis = TimeZone.getTimeZone("Asia/Manila").rawOffset.toLong()
-		val manilaTime = System.currentTimeMillis() + offsetMillis
-		val resetTimestamp = Timestamp(Date(manilaTime))
-
-		dailyLogsRef.get()
-			.addOnSuccessListener { documents ->
-				val batch = db.batch()
-				for (doc in documents) {
-					val foodData = doc.data.toMutableMap()
-					foodData["resetDate"] = resetTimestamp
-					val historyDocRef = historyRef.document()
-					batch.set(historyDocRef, foodData)
-					batch.delete(doc.reference)
-				}
-				batch.commit().addOnSuccessListener {
-					Toast.makeText(this, "Daily logs reset & archived", Toast.LENGTH_SHORT).show()
-					startActivity(Intent(this, daily_logs_history::class.java))
-					finish()
-				}.addOnFailureListener {
-					Toast.makeText(this, "Failed to reset logs", Toast.LENGTH_SHORT).show()
-				}
+			// Parse JSON into a List of FoodItem objects
+			val listType = object : TypeToken<List<FoodItem>>() {}.type
+			originalFoodItems = Gson().fromJson(json, listType)
+			filteredFoodItems.clear()
+			filteredFoodItems.addAll(originalFoodItems)
+			if (::foodAdapter.isInitialized) {
+				foodAdapter.notifyDataSetChanged()
 			}
-			.addOnFailureListener {
-				Toast.makeText(this, "Error resetting daily logs", Toast.LENGTH_SHORT).show()
-			}
+		} catch (e: IOException) {
+			Toast.makeText(this, "Error loading food data", Toast.LENGTH_SHORT).show()
+			Log.e("LandingPage", "Error loading food.json", e)
+		}
 	}
 
+	/**
+	 * Updates the displayed list of foods.
+	 */
+	private fun updateFilteredList(filteredList: List<FoodItem>) {
+		filteredFoodItems.clear()
+		filteredFoodItems.addAll(filteredList)
+		foodAdapter.notifyDataSetChanged()
+	}
 
-	// Add food to daily logs in the user's subcollection
+	/**
+	 * Adds a food item to Firestore under the user's daily_logs collection.
+	 */
 	private fun addFoodToFirestore(food: FoodItem) {
 		val uid = userId ?: run {
 			Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
@@ -200,40 +173,14 @@ class landingpage : AppCompatActivity() {
 			.get()
 			.addOnSuccessListener { documents ->
 				if (documents.isEmpty) {
-					val newFood = food.copy(timestamp = Timestamp.now())
+					val newFood = food.copy(timestamp = com.google.firebase.Timestamp.now())
 					foodRef.add(newFood)
 						.addOnSuccessListener {
 							Toast.makeText(this, "${food.name} added to logs", Toast.LENGTH_SHORT).show()
-							fetchAndComputeRemainingMacros()
 						}
 						.addOnFailureListener {
 							Toast.makeText(this, "Failed to add food", Toast.LENGTH_SHORT).show()
 						}
-				} else {
-					val firstDocId = documents.documents[0].id
-					val docRef = foodRef.document(firstDocId)
-					docRef.get().addOnSuccessListener { doc ->
-						val existingFood = doc.toObject(FoodItem::class.java)
-						if (existingFood != null) {
-							val updatedFood = mapOf(
-								"calories" to (existingFood.calories + food.calories),
-								"protein" to (existingFood.protein + food.protein),
-								"carbs" to (existingFood.carbs + food.carbs),
-								"fats" to (existingFood.fats + food.fats),
-								"servingSize" to (existingFood.servingSize + food.servingSize),
-								"unit" to food.unit,
-								"timestamp" to Timestamp.now()
-							)
-							docRef.update(updatedFood)
-								.addOnSuccessListener {
-									Toast.makeText(this, "${food.name} updated in logs", Toast.LENGTH_SHORT).show()
-									fetchAndComputeRemainingMacros()
-								}
-								.addOnFailureListener {
-									Toast.makeText(this, "Failed to update food", Toast.LENGTH_SHORT).show()
-								}
-						}
-					}
 				}
 			}
 			.addOnFailureListener {
@@ -241,10 +188,11 @@ class landingpage : AppCompatActivity() {
 			}
 	}
 
-	// Fetch daily logs and compute remaining macros against user's goals
+	/**
+	 * Fetches daily logs and computes remaining macros against user's goals.
+	 */
 	private fun fetchAndComputeRemainingMacros() {
 		val uid = userId ?: return
-		// Fetch macro goals from users/{uid}/userMacros/macros
 		db.collection("users").document(uid)
 			.collection("userMacros").document("macros")
 			.get()
@@ -294,6 +242,78 @@ class landingpage : AppCompatActivity() {
 			.addOnFailureListener { e ->
 				Toast.makeText(this, "Error fetching macro goals", Toast.LENGTH_SHORT).show()
 				Log.e("LandingPage", "Error fetching macros", e)
+			}
+	}
+
+	/**
+	 * Checks the time and shows a daily reset dialog if needed.
+	 */
+	private fun checkAndPromptDailyReset() {
+		val calendar = Calendar.getInstance()
+		val hour = calendar.get(Calendar.HOUR_OF_DAY)
+		if (hour == 0) {
+			showDailyResetDialog()
+		}
+	}
+
+	/**
+	 * Displays a dialog prompting the user to reset daily logs.
+	 */
+	private fun showDailyResetDialog() {
+		val dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_reset_day, null)
+		val alertDialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+			.setView(dialogView)
+			.create()
+		alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+
+		val confirmButton = dialogView.findViewById<Button>(R.id.confirmButton)
+		val cancelButton = dialogView.findViewById<Button>(R.id.cancelButton)
+
+		confirmButton.setOnClickListener {
+			resetAllData()
+			alertDialog.dismiss()
+		}
+		cancelButton.setOnClickListener {
+			alertDialog.dismiss()
+		}
+		alertDialog.show()
+	}
+
+	/**
+	 * Archives current daily logs to "daily_logs_history" and deletes them from "daily_logs".
+	 * Uses Asia/Manila time.
+	 */
+	private fun resetAllData() {
+		val uid = userId ?: return
+		val userRef = db.collection("users").document(uid)
+		val dailyLogsRef = userRef.collection("daily_logs")
+		val historyRef = userRef.collection("daily_logs_history")
+
+		// Get current Manila time
+		val offsetMillis = TimeZone.getTimeZone("Asia/Manila").rawOffset.toLong()
+		val manilaTime = System.currentTimeMillis() + offsetMillis
+		val resetTimestamp = Timestamp(Date(manilaTime))
+
+		dailyLogsRef.get()
+			.addOnSuccessListener { documents ->
+				val batch = db.batch()
+				for (doc in documents) {
+					val foodData = doc.data.toMutableMap()
+					foodData["resetDate"] = resetTimestamp
+					val historyDocRef = historyRef.document()
+					batch.set(historyDocRef, foodData)
+					batch.delete(doc.reference)
+				}
+				batch.commit().addOnSuccessListener {
+					Toast.makeText(this, "Daily logs reset & archived", Toast.LENGTH_SHORT).show()
+					startActivity(Intent(this, daily_logs_history::class.java))
+					finish()
+				}.addOnFailureListener {
+					Toast.makeText(this, "Failed to reset logs", Toast.LENGTH_SHORT).show()
+				}
+			}
+			.addOnFailureListener {
+				Toast.makeText(this, "Error resetting daily logs", Toast.LENGTH_SHORT).show()
 			}
 	}
 }

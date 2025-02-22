@@ -1,10 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".support_us_activity">
+
+    <!-- Back Button -->
+    <ImageView
+        android:id="@+id/backButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/backbutton_icon"
+        android:contentDescription="Back"
+        android:padding="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp"/>
+
+    <!-- PayMongo Logo -->
+    <ImageView
+        android:id="@+id/paymongoLogo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/paymongo_logo"
+        android:background="@drawable/paymongo_image_rounded"
+        android:scaleType="centerCrop"
+        android:contentDescription="PayMongo Logo"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="80dp"/>
+
+
+    <!-- Donation Amount Selection -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/donationCard"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:layout_constraintTop_toBottomOf="@id/paymongoLogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/donationTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Support MacroTracker!"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/donationSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Help us continue improving MacroTracker by making a small donation."
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp"/>
+
+            <!-- Donation Amount Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp">
+
+                <Button
+                    android:id="@+id/donate100"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₱100"
+                    android:backgroundTint="#4CAF50"
+                    android:textColor="@android:color/white"
+                    android:paddingHorizontal="24dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/donate250"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₱250"
+                    android:backgroundTint="#4CAF50"
+                    android:textColor="@android:color/white"
+                    android:paddingHorizontal="24dp"
+                    android:layout_marginEnd="8dp"/>
+
+                <Button
+                    android:id="@+id/donate500"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="₱500"
+                    android:backgroundTint="#4CAF50"
+                    android:textColor="@android:color/white"
+                    android:paddingHorizontal="24dp"/>
+            </LinearLayout>
+
+            <!-- Custom Donation Amount Input -->
+            <EditText
+                android:id="@+id/customAmount"
+                android:layout_width="300dp"
+                android:layout_marginBottom="10dp"
+                android:layout_height="wrap_content"
+                android:hint="Enter Custom Amount"
+                android:inputType="numberDecimal"
+                android:background="@drawable/roundcorner"
+                android:padding="12dp"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="12dp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Donate Button -->
+    <Button
+        android:id="@+id/donateButton"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:text="Donate via PayMongo"
+        android:backgroundTint="#4CAF50"
+        android:textColor="@android:color/white"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/donationCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

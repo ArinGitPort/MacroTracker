@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:backgroundTint="@color/gray"
     android:background="@drawable/roundcorner"
     android:layout_marginBottom="8dp"
     android:elevation="4dp"
@@ -17,7 +18,7 @@
         android:layout_height="wrap_content"
         android:text="Food Name"
         android:textSize="16sp"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:paddingBottom="4dp"/>
 
@@ -28,7 +29,7 @@
         android:layout_height="wrap_content"
         android:text="Logged on: Feb 19, 2025, 6:00 PM"
         android:textSize="14sp"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:paddingBottom="4dp"/>
 
     <!-- Macronutrients Row 1 -->
@@ -44,7 +45,8 @@
             android:layout_weight="1"
             android:text="Calories: 150 kcal"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"
+            />
 
         <TextView
             android:id="@+id/protein"
@@ -53,7 +55,8 @@
             android:layout_weight="1"
             android:text="Protein: 10g"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"
+            />
     </LinearLayout>
 
     <!-- Macronutrients Row 2 -->
@@ -70,7 +73,8 @@
             android:layout_weight="1"
             android:text="Carbs: 20g"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"
+            />
 
         <TextView
             android:id="@+id/fats"
@@ -79,7 +83,8 @@
             android:layout_weight="1"
             android:text="Fats: 5g"
             android:textSize="14sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"
+            />
     </LinearLayout>
 
     <!-- Serving -->
@@ -89,6 +94,6 @@
         android:layout_height="wrap_content"
         android:text="Serving: 1 serving"
         android:textSize="14sp"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:paddingTop="4dp"/>
 </LinearLayout>

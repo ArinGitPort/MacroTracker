@@ -54,6 +54,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(platform("com.google.firebase:firebase-bom:31.2.3"))
     implementation("androidx.cardview:cardview:1.0.0")
-
-
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
+    implementation("com.google.code.gson:gson:2.8.9")
 }
+

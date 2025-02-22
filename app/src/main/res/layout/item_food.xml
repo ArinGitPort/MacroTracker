@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="8dp"
+    android:backgroundTint="@color/gray"
     android:background="@drawable/roundcorner"
     android:layout_marginBottom="4dp"
     android:elevation="2dp">
@@ -21,7 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
             android:hint="Food"
             android:textSize="16sp" />
 
@@ -32,7 +34,7 @@
             android:text="Add"
             android:textColor="#FFFFFF"
             android:layout_margin="5dp"
-            android:backgroundTint="#000000"
+            android:backgroundTint="@color/black"
             android:paddingHorizontal="12dp"
             android:paddingVertical="4dp"
             app:cornerRadius="12dp"/>
@@ -51,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Calories: 0"
-            android:textColor="#000000"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:layout_marginEnd="8dp"/>
 
@@ -60,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Protein: 0g"
-            android:textColor="#000000"
+            android:textColor="@color/white"
             android:textSize="14sp"
             android:layout_marginEnd="8dp"/>
 
@@ -68,17 +70,17 @@
             android:id="@+id/carbsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:text="Carbs: 0g"
-            android:textColor="#000000"
-            android:textSize="14sp"
-            android:layout_marginEnd="8dp"/>
+            android:textColor="@color/white"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/fatsText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fats: 0g"
-            android:textColor="#000000"
+            android:textColor="@color/white"
             android:textSize="14sp"/>
     </LinearLayout>
 </LinearLayout>

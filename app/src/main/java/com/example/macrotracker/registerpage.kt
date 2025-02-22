@@ -2,16 +2,19 @@ package com.example.macrotracker
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
+import android.util.Patterns
 import android.view.animation.AlphaAnimation
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class registerpage : AppCompatActivity() {
 
@@ -23,7 +26,7 @@ class registerpage : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_registerpage)
 
-        // Initialize Firebase
+        // Initialize Firebase components
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
@@ -34,7 +37,6 @@ class registerpage : AppCompatActivity() {
         }
 
         val registerButton = findViewById<Button>(R.id.registerButton)
-        val usernameInput = findViewById<EditText>(R.id.usernameInput)
         val emailInput = findViewById<EditText>(R.id.emailInput)
         val passwordInput = findViewById<EditText>(R.id.passwordInput)
 
@@ -48,12 +50,23 @@ class registerpage : AppCompatActivity() {
 
         // Register Button Click
         registerButton.setOnClickListener {
-            val username = usernameInput.text.toString().trim()
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
 
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            // Validate email and password inputs.
+            if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "All fields are required!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Reject emails that appear to be dummy accounts (customize as needed)
+            if (email.contains("dummy", ignoreCase = true)) {
+                Toast.makeText(this, "Please use a valid email address", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                Toast.makeText(this, "Invalid email format", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -62,7 +75,8 @@ class registerpage : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            registerUser(username, email, password)
+            // Use a default username ("User") which can be updated later
+            registerUser("User", email, password)
         }
 
         // Back Button Click
@@ -74,6 +88,7 @@ class registerpage : AppCompatActivity() {
 
     /**
      * Register the user in Firebase Authentication and store their data in Firestore.
+     * Also sends a verification email after registration.
      */
     private fun registerUser(username: String, email: String, password: String) {
         auth.createUserWithEmailAndPassword(email, password)
@@ -81,6 +96,18 @@ class registerpage : AppCompatActivity() {
                 val userId = authResult.user?.uid
                 if (userId != null) {
                     saveUserData(userId, username, email)
+                    // Send email verification
+                    auth.currentUser?.sendEmailVerification()
+                        ?.addOnSuccessListener {
+                            Toast.makeText(this, "Registration successful! Please check your email to verify your account.", Toast.LENGTH_LONG).show()
+                        }
+                        ?.addOnFailureListener { e ->
+                            Toast.makeText(this, "Failed to send verification email: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    // Optionally, sign the user out until they verify their email:
+                    auth.signOut()
+                    startActivity(Intent(this, loginpage::class.java))
+                    finish()
                 }
             }
             .addOnFailureListener { e ->
@@ -89,7 +116,7 @@ class registerpage : AppCompatActivity() {
     }
 
     /**
-     * Save user data to Firestore under "users/{userID}"
+     * Save user data to Firestore under "users/{userID}" using merge so as not to overwrite subcollections.
      */
     private fun saveUserData(userId: String, username: String, email: String) {
         val userData = hashMapOf(
@@ -98,8 +125,7 @@ class registerpage : AppCompatActivity() {
         )
 
         val userRef = db.collection("users").document(userId)
-
-        userRef.set(userData)
+        userRef.set(userData, SetOptions.merge())
             .addOnSuccessListener {
                 setupUserCollections(userId)
             }
@@ -114,7 +140,7 @@ class registerpage : AppCompatActivity() {
     private fun setupUserCollections(userId: String) {
         val userRef = db.collection("users").document(userId)
 
-        // Initialize empty macros
+        // Initialize empty macros with default values
         val defaultMacros = hashMapOf(
             "calories" to 2000,
             "protein" to 150,
@@ -125,9 +151,7 @@ class registerpage : AppCompatActivity() {
         userRef.collection("userMacros").document("macros")
             .set(defaultMacros)
             .addOnSuccessListener {
-                Toast.makeText(this, "User registered successfully!", Toast.LENGTH_SHORT).show()
-                startActivity(Intent(this, loginpage::class.java))
-                finish()
+                // No additional action required here.
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error initializing macros: ${e.message}", Toast.LENGTH_SHORT).show()

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="24dp"
@@ -15,25 +16,23 @@
             android:id="@+id/dialogTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="FeedBox"
+            android:text="Edit Username"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/white"
             android:layout_marginBottom="16dp" />
 
         <EditText
-            android:id="@+id/feedbackInput"
+            android:id="@+id/editUsernameInput"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:inputType="textMultiLine"
-            android:hint="Enter your Feedback!"
-            android:background="@drawable/input_field_bg"
+            android:layout_height="48dp"
+            android:hint="Enter new username"
+            android:background="@drawable/loginlayout1"
+            android:inputType="textPersonName"
             android:padding="12dp"
-            android:textSize="16sp"
             android:textColor="@color/black"
-            android:gravity="top|start"
-            android:focusable="true"
-            android:focusableInTouchMode="true"/>
+            android:textColorHint="#BDBDBD"
+            android:layout_marginBottom="24dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,10 +51,10 @@
                 android:layout_marginEnd="16dp" />
 
             <Button
-                android:id="@+id/sendButton"
+                android:id="@+id/updateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Send"
+                android:text="Confirm"
                 android:textSize="16sp"
                 android:backgroundTint="@color/black"
                 android:textColor="@color/white" />

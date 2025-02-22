@@ -65,7 +65,19 @@
                 android:padding="12dp"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Gender Spinner -->
+            <EditText
+                android:id="@+id/ageInput"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Enter Age"
+                android:inputType="number"
+                android:background="@drawable/settings_input_field"
+                android:textColor="@color/black"
+                android:textColorHint="#BDBDBD"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:layout_marginBottom="16dp"/>
+
             <Spinner
                 android:id="@+id/genderSpinner"
                 android:layout_width="match_parent"
@@ -75,6 +87,9 @@
                 android:textSize="16sp"
                 android:layout_marginBottom="16dp"
                 android:entries="@array/gender_options"/>
+
+            <!-- Gender Spinner -->
+
 
 
             <!-- Goal Weight -->

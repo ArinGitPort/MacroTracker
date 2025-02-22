@@ -52,21 +52,24 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <TextView
+
+            <!-- Grid Layout Below Email -->
+            <EditText
                 android:id="@+id/usernameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
                 android:layout_marginBottom="10dp"
                 android:padding="10dp"
-                android:text="Username"
-                android:layout_gravity="center_horizontal"
-                android:textColor="#FFFFFF"
+                android:hint="Username"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
                 android:textSize="28sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
 
 
-            <!-- Grid Layout Below Email -->
             <GridLayout
                 android:id="@+id/gridBoxContainer"
                 android:layout_width="match_parent"

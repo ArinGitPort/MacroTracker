@@ -1,0 +1,429 @@
+[
+  {
+    "name": "Chicken Breast",
+    "calories": 165,
+    "protein": 31,
+    "carbs": 0,
+    "fats": 4
+  },
+  {
+    "name": "Chicken Thigh",
+    "calories": 209,
+    "protein": 26,
+    "carbs": 0,
+    "fats": 11
+  },
+  {
+    "name": "Beef Steak",
+    "calories": 250,
+    "protein": 26,
+    "carbs": 0,
+    "fats": 17
+  },
+  {
+    "name": "Ground Beef (90% lean)",
+    "calories": 176,
+    "protein": 21,
+    "carbs": 0,
+    "fats": 10
+  },
+  {
+    "name": "Pork Chop",
+    "calories": 231,
+    "protein": 25,
+    "carbs": 0,
+    "fats": 14
+  },
+  {
+    "name": "Salmon",
+    "calories": 208,
+    "protein": 20,
+    "carbs": 0,
+    "fats": 13
+  },
+  {
+    "name": "Tuna (canned in water)",
+    "calories": 116,
+    "protein": 26,
+    "carbs": 0,
+    "fats": 1
+  },
+  {
+    "name": "Tilapia",
+    "calories": 129,
+    "protein": 26,
+    "carbs": 0,
+    "fats": 3
+  },
+  {
+    "name": "Shrimp",
+    "calories": 99,
+    "protein": 24,
+    "carbs": 0,
+    "fats": 1
+  },
+  {
+    "name": "Egg",
+    "calories": 70,
+    "protein": 6,
+    "carbs": 1,
+    "fats": 5
+  },
+  {
+    "name": "Milk (Whole)",
+    "calories": 150,
+    "protein": 8,
+    "carbs": 12,
+    "fats": 8
+  },
+  {
+    "name": "Greek Yogurt (Plain)",
+    "calories": 59,
+    "protein": 10,
+    "carbs": 3,
+    "fats": 0
+  },
+  {
+    "name": "Cheddar Cheese",
+    "calories": 113,
+    "protein": 7,
+    "carbs": 0,
+    "fats": 9
+  },
+  {
+    "name": "Broccoli",
+    "calories": 55,
+    "protein": 4,
+    "carbs": 11,
+    "fats": 1
+  },
+  {
+    "name": "Spinach",
+    "calories": 23,
+    "protein": 3,
+    "carbs": 3,
+    "fats": 0
+  },
+  {
+    "name": "Carrot",
+    "calories": 41,
+    "protein": 1,
+    "carbs": 10,
+    "fats": 0
+  },
+  {
+    "name": "Apple",
+    "calories": 95,
+    "protein": 0,
+    "carbs": 25,
+    "fats": 0
+  },
+  {
+    "name": "Banana",
+    "calories": 105,
+    "protein": 1,
+    "carbs": 27,
+    "fats": 0
+  },
+  {
+    "name": "Orange",
+    "calories": 62,
+    "protein": 1,
+    "carbs": 15,
+    "fats": 0
+  },
+  {
+    "name": "Strawberries",
+    "calories": 32,
+    "protein": 1,
+    "carbs": 8,
+    "fats": 0
+  },
+  {
+    "name": "Blueberries",
+    "calories": 57,
+    "protein": 1,
+    "carbs": 14,
+    "fats": 0
+  },
+  {
+    "name": "White Rice",
+    "calories": 130,
+    "protein": 2,
+    "carbs": 28,
+    "fats": 0
+  },
+  {
+    "name": "Brown Rice",
+    "calories": 112,
+    "protein": 2,
+    "carbs": 23,
+    "fats": 1
+  },
+  {
+    "name": "Quinoa",
+    "calories": 120,
+    "protein": 4,
+    "carbs": 21,
+    "fats": 2
+  },
+  {
+    "name": "Oatmeal",
+    "calories": 154,
+    "protein": 5,
+    "carbs": 27,
+    "fats": 3
+  },
+  {
+    "name": "Bread (Whole Wheat)",
+    "calories": 79,
+    "protein": 3,
+    "carbs": 14,
+    "fats": 1
+  },
+  {
+    "name": "Bagel",
+    "calories": 289,
+    "protein": 11,
+    "carbs": 56,
+    "fats": 1
+  },
+  {
+    "name": "Pasta (Cooked)",
+    "calories": 131,
+    "protein": 5,
+    "carbs": 25,
+    "fats": 1
+  },
+  {
+    "name": "Potato",
+    "calories": 77,
+    "protein": 2,
+    "carbs": 17,
+    "fats": 0
+  },
+  {
+    "name": "Sweet Potato",
+    "calories": 86,
+    "protein": 1,
+    "carbs": 20,
+    "fats": 0
+  },
+  {
+    "name": "Avocado",
+    "calories": 160,
+    "protein": 2,
+    "carbs": 9,
+    "fats": 15
+  },
+  {
+    "name": "Almonds",
+    "calories": 579,
+    "protein": 21,
+    "carbs": 22,
+    "fats": 50
+  },
+  {
+    "name": "Walnuts",
+    "calories": 654,
+    "protein": 15,
+    "carbs": 14,
+    "fats": 65
+  },
+  {
+    "name": "Peanut Butter",
+    "calories": 588,
+    "protein": 25,
+    "carbs": 20,
+    "fats": 50
+  },
+  {
+    "name": "Olive Oil",
+    "calories": 884,
+    "protein": 0,
+    "carbs": 0,
+    "fats": 100
+  },
+  {
+    "name": "Butter",
+    "calories": 717,
+    "protein": 1,
+    "carbs": 0,
+    "fats": 81
+  },
+  {
+    "name": "Lentils (Cooked)",
+    "calories": 116,
+    "protein": 9,
+    "carbs": 20,
+    "fats": 0
+  },
+  {
+    "name": "Chickpeas (Cooked)",
+    "calories": 164,
+    "protein": 9,
+    "carbs": 27,
+    "fats": 3
+  },
+  {
+    "name": "Black Beans (Cooked)",
+    "calories": 132,
+    "protein": 9,
+    "carbs": 23,
+    "fats": 1
+  },
+  {
+    "name": "Kidney Beans (Cooked)",
+    "calories": 127,
+    "protein": 9,
+    "carbs": 23,
+    "fats": 1
+  },
+  {
+    "name": "Edamame",
+    "calories": 121,
+    "protein": 11,
+    "carbs": 9,
+    "fats": 5
+  },
+  {
+    "name": "Tofu",
+    "calories": 76,
+    "protein": 8,
+    "carbs": 2,
+    "fats": 5
+  },
+  {
+    "name": "Tempeh",
+    "calories": 195,
+    "protein": 20,
+    "carbs": 8,
+    "fats": 11
+  },
+  {
+    "name": "Turkey Breast",
+    "calories": 135,
+    "protein": 29,
+    "carbs": 0,
+    "fats": 1
+  },
+  {
+    "name": "Sardines (in water)",
+    "calories": 208,
+    "protein": 24,
+    "carbs": 0,
+    "fats": 11
+  },
+  {
+    "name": "Cod",
+    "calories": 82,
+    "protein": 18,
+    "carbs": 0,
+    "fats": 1
+  },
+  {
+    "name": "Mackerel",
+    "calories": 305,
+    "protein": 19,
+    "carbs": 0,
+    "fats": 25
+  },
+  {
+    "name": "Boiled Egg",
+    "calories": 68,
+    "protein": 6,
+    "carbs": 1,
+    "fats": 5
+  },
+  {
+    "name": "Cottage Cheese",
+    "calories": 98,
+    "protein": 11,
+    "carbs": 3,
+    "fats": 4
+  },
+  {
+    "name": "Ice Cream",
+    "calories": 207,
+    "protein": 3,
+    "carbs": 24,
+    "fats": 11
+  },
+  {
+    "name": "Dark Chocolate (70% cocoa)",
+    "calories": 598,
+    "protein": 8,
+    "carbs": 46,
+    "fats": 42
+  },
+  {
+    "name": "Apple Juice",
+    "calories": 46,
+    "protein": 0,
+    "carbs": 11,
+    "fats": 0
+  },
+  {
+    "name": "Orange Juice",
+    "calories": 112,
+    "protein": 2,
+    "carbs": 26,
+    "fats": 1
+  },
+  {
+    "name": "Soda",
+    "calories": 150,
+    "protein": 0,
+    "carbs": 39,
+    "fats": 0
+  },
+  {
+    "name": "Baked Potato",
+    "calories": 161,
+    "protein": 4,
+    "carbs": 37,
+    "fats": 0
+  },
+  {
+    "name": "Green Peas",
+    "calories": 81,
+    "protein": 5,
+    "carbs": 14,
+    "fats": 0
+  },
+  {
+    "name": "Mushrooms",
+    "calories": 22,
+    "protein": 3,
+    "carbs": 3,
+    "fats": 0
+  },
+  {
+    "name": "Bell Pepper",
+    "calories": 31,
+    "protein": 1,
+    "carbs": 6,
+    "fats": 0
+  },
+  {
+    "name": "Cucumber",
+    "calories": 16,
+    "protein": 1,
+    "carbs": 4,
+    "fats": 0
+  },
+  {
+    "name": "Tomato",
+    "calories": 18,
+    "protein": 1,
+    "carbs": 4,
+    "fats": 0
+  },
+  {
+    "name": "Zucchini",
+    "calories": 17,
+    "protein": 1,
+    "carbs": 3,
+    "fats": 0
+  }
+]

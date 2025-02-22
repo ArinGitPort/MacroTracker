@@ -214,7 +214,8 @@
 						android:hint="Search"
 						android:inputType="text"
 						android:paddingVertical="7dp"
-						android:textColor="#FFFFFF"
+						android:textColor="@color/white"
+						android:textColorHint="@color/white"
 						android:textSize="17sp"
 						android:drawableEnd="@drawable/baseline_search_24"/>
 
@@ -301,9 +302,9 @@
 						android:paddingTop="2dp"/>
 				</LinearLayout>
 
-				<!-- Scanner Icon + Text -->
+				<!-- settings Icon + Text -->
 				<LinearLayout
-					android:id="@+id/scannerContainer"
+					android:id="@+id/settingsContainer"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
