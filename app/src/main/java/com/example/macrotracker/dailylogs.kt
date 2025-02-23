@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.macrotracker.databinding.ActivityDailylogsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.Timestamp
 import java.util.Calendar
 import java.util.Locale
@@ -34,11 +35,17 @@ class dailylogs : AppCompatActivity() {
             return
         }
 
-        // Set up RecyclerView with adapter
+        // Set up RecyclerView with adapter using findViewById or binding (if available)
+        val foodCollectionRef: CollectionReference = db.collection("users")
+            .document(userId!!).collection("daily_logs")
         dailyLogsAdapter = DailyLogsAdapter(
+            foodCollectionRef,
             loggedFoods,
             onRemoveClick = { foodItem -> removeFoodItem(foodItem) },
-            onEditClick = { fetchDailyLogs(); fetchAndComputeRemainingMacros() } // Refresh UI after editing
+            onEditClick = {
+                fetchDailyLogs()
+                fetchAndComputeRemainingMacros()
+            }
         )
         binding.dailyFoodRecyclerView.apply {
             layoutManager = LinearLayoutManager(this@dailylogs)
