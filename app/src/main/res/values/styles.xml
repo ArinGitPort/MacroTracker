@@ -17,41 +17,30 @@
 
     <!-- Custom DatePickerDialog Theme -->
     <style name="CustomDatePickerDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <!-- Override the datePickerStyle -->
         <item name="android:datePickerStyle">@style/CustomDatePickerStyle</item>
-        <!-- Ensure the buttons (Confirm/Cancel) have a visible color -->
         <item name="android:buttonBarButtonStyle">@style/CustomButtonBarButton</item>
     </style>
 
-    <!-- Custom Button Style for Confirm & Cancel in Dialog -->
-    <style name="CustomButtonBarButton" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="android:textColor">@color/black</item> <!-- Change this to a visible color -->
-    </style>
-
-
-    <!-- Custom DatePicker Style -->
     <style name="CustomDatePickerStyle" parent="android:Widget.Material.DatePicker">
-        <!-- Header background color -->
         <item name="android:headerBackground">@color/white</item>
-        <!-- Removed headerTextColor since it's a private attribute -->
-        <!-- Date text appearance -->
         <item name="android:dateTextAppearance">@style/CustomDatePickerDateText</item>
-        <!-- Day selector color might be controlled by calendarViewStyle if using a CalendarView -->
         <item name="android:calendarViewStyle">@style/CustomCalendarViewStyle</item>
     </style>
 
-    <!-- Custom Date Text Appearance -->
     <style name="CustomDatePickerDateText" parent="android:TextAppearance.Material.Body1">
         <item name="android:textColor">@color/black</item>
     </style>
 
-    <!-- Custom CalendarView Style (if applicable) -->
     <style name="CustomCalendarViewStyle" parent="android:Widget.Material.CalendarView">
         <item name="android:weekSeparatorLineColor">@color/white</item>
         <item name="android:focusedMonthDateColor">@color/white</item>
         <item name="android:unfocusedMonthDateColor">@color/white</item>
         <item name="android:selectedWeekBackgroundColor">@color/white</item>
         <item name="android:weekNumberColor">@color/white</item>
+    </style>
+
+    <style name="CustomButtonBarButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/black</item>
     </style>
 
 

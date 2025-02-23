@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
@@ -15,11 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.macrotracker.databinding.ActivityAdminLogsBinding
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.example.macrotracker.databinding.ActivityAdminLogsBinding
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -30,7 +31,6 @@ class admin_logs : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdminLogsBinding
     private val db = FirebaseFirestore.getInstance()
-    private lateinit var auth: com.google.firebase.auth.FirebaseAuth
 
     // Full list of feedback items fetched from Firestore
     private val fullFeedbackList = mutableListOf<FeedbackItem>()
@@ -47,14 +47,12 @@ class admin_logs : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityAdminLogsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        // Initialize FirebaseAuth
-        auth = com.google.firebase.auth.FirebaseAuth.getInstance()
 
         // Setup RecyclerView for feedback
         feedbackAdapter = FeedbackAdapter(filteredFeedbackList)
@@ -64,7 +62,7 @@ class admin_logs : AppCompatActivity() {
         // Setup Logout Button functionality
         val logoutButton = findViewById<MaterialButton>(R.id.logoutButton)
         logoutButton.setOnClickListener {
-            auth.signOut()
+            com.google.firebase.auth.FirebaseAuth.getInstance().signOut()
             Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show()
             startActivity(Intent(this, loginpage::class.java))
             finish()
@@ -76,7 +74,7 @@ class admin_logs : AppCompatActivity() {
             showClearFeedbackConfirmationDialog()
         }
 
-        // Setup search bar filter (EditText with ID "searchBar" in your layout)
+        // Setup search bar filter
         val searchBar = findViewById<EditText>(R.id.searchBar)
         searchBar.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) { }
@@ -87,7 +85,7 @@ class admin_logs : AppCompatActivity() {
             }
         })
 
-        // Setup date filter button (MaterialButton with ID "dateFilterButton" in your layout)
+        // Setup date filter button
         val dateFilterButton = findViewById<MaterialButton>(R.id.dateFilterButton)
         dateFilterButton.setOnClickListener {
             showDateRangePicker()
@@ -107,7 +105,6 @@ class admin_logs : AppCompatActivity() {
                     val item = doc.toObject(FeedbackItem::class.java).copy(docId = doc.id)
                     fullFeedbackList.add(item)
                 }
-                // Initially, display the full list.
                 filteredFeedbackList.clear()
                 filteredFeedbackList.addAll(fullFeedbackList)
                 feedbackAdapter.notifyDataSetChanged()
@@ -118,18 +115,18 @@ class admin_logs : AppCompatActivity() {
     }
 
     /**
-     * Combines keyword and date range filters to update the feedback list.
+     * Applies the keyword and date range filters to the full feedback list and updates the adapter.
      */
     private fun filterFeedbackList() {
         val filtered = fullFeedbackList.filter { item ->
-            // Check keyword filter: username or feedback should contain the keyword.
+            // Keyword check (username or feedback)
             val matchesKeyword = if (keywordFilter.isNotBlank()) {
                 item.username.lowercase(Locale.getDefault()).contains(keywordFilter.lowercase(Locale.getDefault())) ||
                         item.feedback.lowercase(Locale.getDefault()).contains(keywordFilter.lowercase(Locale.getDefault()))
             } else {
                 true
             }
-            // Check date filter: if both start and end dates are set, the item's date must be within the range.
+            // Date check: if both dates are set, item’s timestamp must be within the range.
             val matchesDate = if (startDateFilter != null && endDateFilter != null && item.timestamp != null) {
                 val date = item.timestamp.toDate()
                 !date.before(startDateFilter) && !date.after(endDateFilter)
@@ -144,25 +141,24 @@ class admin_logs : AppCompatActivity() {
     }
 
     /**
-     * Shows a DatePickerDialog to select a date range for filtering feedback.
-     * After selecting the start date, it then prompts for an end date.
+     * Displays a date range picker using two DatePickerDialogs with a custom style.
      */
     private fun showDateRangePicker() {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Manila"))
+        // First DatePickerDialog for start date with custom theme
         DatePickerDialog(
             this,
+            R.style.CustomDatePickerDialogTheme,
             { _, year, month, dayOfMonth ->
-                // Set start date at beginning of day
                 calendar.set(year, month, dayOfMonth, 0, 0, 0)
                 startDateFilter = calendar.time
-
-                // Now prompt for end date
+                // Second DatePickerDialog for end date with custom theme
                 DatePickerDialog(
                     this,
+                    R.style.CustomDatePickerDialogTheme,
                     { _, endYear, endMonth, endDayOfMonth ->
                         calendar.set(endYear, endMonth, endDayOfMonth, 23, 59, 59)
                         endDateFilter = calendar.time
-                        // Apply filter after both dates are selected
                         filterFeedbackList()
                         Toast.makeText(
                             this,
@@ -188,7 +184,7 @@ class admin_logs : AppCompatActivity() {
     }
 
     /**
-     * Displays a confirmation dialog to clear all feedback from the "feedbox" collection.
+     * Displays a confirmation dialog to clear all feedback.
      */
     private fun showClearFeedbackConfirmationDialog() {
         val builder = AlertDialog.Builder(this)
@@ -227,7 +223,7 @@ class admin_logs : AppCompatActivity() {
             }
     }
 
-    // Data model for feedback items
+    // Data model for feedback items.
     data class FeedbackItem(
         val username: String = "",
         val feedback: String = "",
@@ -235,7 +231,7 @@ class admin_logs : AppCompatActivity() {
         val docId: String = ""
     )
 
-    // Adapter for feedback items
+    // Adapter for feedback items.
     inner class FeedbackAdapter(private var feedbacks: List<FeedbackItem>) :
         androidx.recyclerview.widget.RecyclerView.Adapter<FeedbackAdapter.FeedbackViewHolder>() {
 
@@ -258,7 +254,7 @@ class admin_logs : AppCompatActivity() {
             holder.usernameText.text = item.username
             holder.feedbackText.text = item.feedback
             holder.timeText.text = formatTimestamp(item.timestamp)
-            // Remove button functionality: delete the feedback from Firestore.
+            // Remove button functionality
             holder.removeButton.setOnClickListener {
                 db.collection("feedbox").document(item.docId)
                     .delete()
@@ -274,11 +270,6 @@ class admin_logs : AppCompatActivity() {
         }
 
         override fun getItemCount(): Int = feedbacks.size
-
-        fun updateList(newList: List<FeedbackItem>) {
-            feedbacks = newList
-            notifyDataSetChanged()
-        }
 
         private fun formatTimestamp(timestamp: Timestamp?): String {
             return if (timestamp != null) {
