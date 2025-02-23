@@ -21,8 +21,8 @@ class userprofile : AppCompatActivity() {
     private lateinit var shareButton: Button
     private lateinit var logoutButton: Button
     private lateinit var backButton: ImageView
-    // Ensure that the view with id "usernameTextView" in your layout is an EditText
     private lateinit var usernameEditText: EditText
+    private lateinit var cookpalIcon: ImageView
 
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
@@ -39,6 +39,7 @@ class userprofile : AppCompatActivity() {
         logoutButton = findViewById(R.id.logoutButton)
         backButton = findViewById(R.id.backButton)
         usernameEditText = findViewById(R.id.usernameTextView)
+        cookpalIcon = findViewById(R.id.cookpalIcon)
 
         // Fetch and display username from Firestore
         val uid = auth.currentUser?.uid
@@ -46,7 +47,6 @@ class userprofile : AppCompatActivity() {
             db.collection("users").document(uid).get()
                 .addOnSuccessListener { document ->
                     if (document.exists()) {
-                        // Retrieve the "username" field. If it's empty or equals the UID, use a default value.
                         val username = document.getString("username")
                         if (username.isNullOrEmpty() || username == uid) {
                             usernameEditText.setText("User")
@@ -62,7 +62,7 @@ class userprofile : AppCompatActivity() {
                 }
         }
 
-        // When the user taps the username field, show the edit username dialog.
+        // Open edit username dialog
         usernameEditText.setOnClickListener {
             showEditUsernameDialog()
         }
@@ -97,16 +97,19 @@ class userprofile : AppCompatActivity() {
             startActivity(Intent(this, landingpage::class.java))
             finish()
         }
+
+        // Navigation to CookPal Activity
+        cookpalIcon.setOnClickListener {
+            startActivity(Intent(this, cookpal::class.java))
+        }
     }
 
     /**
      * Displays a dialog to allow the user to edit their username.
-     * The dialog layout is defined in edit_username_dialog.xml.
      */
     private fun showEditUsernameDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.edit_username_dialog, null)
         val usernameInput = dialogView.findViewById<EditText>(R.id.editUsernameInput)
-        // Pre-populate with the current username.
         usernameInput.setText(usernameEditText.text.toString())
 
         val alertDialog = AlertDialog.Builder(this)
@@ -152,8 +155,7 @@ class userprofile : AppCompatActivity() {
     }
 
     /**
-     * Displays the feedbox dialog using the layout 'feedbox_dialog.xml'.
-     * When the user taps "Send", the feedback message is sent to Firestore.
+     * Displays the feedbox dialog.
      */
     private fun showFeedboxDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.feedbox_dialog, null)
@@ -168,7 +170,6 @@ class userprofile : AppCompatActivity() {
         sendButton.setOnClickListener {
             val feedback = feedbackInput.text.toString().trim()
             if (feedback.isNotEmpty()) {
-                // Use the username from Firestore if available; here we simply use the uid as fallback.
                 val currentUsername = usernameEditText.text.toString().ifEmpty { "Anonymous" }
                 val feedbackData = hashMapOf(
                     "username" to currentUsername,
@@ -197,7 +198,7 @@ class userprofile : AppCompatActivity() {
     }
 
     /**
-     * Shows a confirmation dialog for logout using a custom layout (logout_dialog.xml).
+     * Shows a confirmation dialog for logout.
      */
     private fun showLogoutConfirmationDialog() {
         val dialogView = LayoutInflater.from(this).inflate(R.layout.logout_dialog, null)

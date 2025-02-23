@@ -177,16 +177,45 @@ class landingpage : AppCompatActivity() {
 					foodRef.add(newFood)
 						.addOnSuccessListener {
 							Toast.makeText(this, "${food.name} added to logs", Toast.LENGTH_SHORT).show()
+							// Recalculate macros immediately after adding a new food item
+							fetchAndComputeRemainingMacros()
 						}
 						.addOnFailureListener {
 							Toast.makeText(this, "Failed to add food", Toast.LENGTH_SHORT).show()
 						}
+				} else {
+					val firstDocId = documents.documents[0].id
+					val docRef = foodRef.document(firstDocId)
+					docRef.get().addOnSuccessListener { doc ->
+						val existingFood = doc.toObject(FoodItem::class.java)
+						if (existingFood != null) {
+							val updatedFood = mapOf(
+								"calories" to (existingFood.calories + food.calories),
+								"protein" to (existingFood.protein + food.protein),
+								"carbs" to (existingFood.carbs + food.carbs),
+								"fats" to (existingFood.fats + food.fats),
+								"servingSize" to (existingFood.servingSize + food.servingSize),
+								"unit" to food.unit,
+								"timestamp" to com.google.firebase.Timestamp.now()
+							)
+							docRef.update(updatedFood)
+								.addOnSuccessListener {
+									Toast.makeText(this, "${food.name} updated in logs", Toast.LENGTH_SHORT).show()
+									// Recalculate macros immediately after updating food item
+									fetchAndComputeRemainingMacros()
+								}
+								.addOnFailureListener {
+									Toast.makeText(this, "Failed to update food", Toast.LENGTH_SHORT).show()
+								}
+						}
+					}
 				}
 			}
 			.addOnFailureListener {
 				Toast.makeText(this, "Error checking food logs", Toast.LENGTH_SHORT).show()
 			}
 	}
+
 
 	/**
 	 * Fetches daily logs and computes remaining macros against user's goals.
