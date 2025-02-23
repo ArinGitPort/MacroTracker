@@ -74,17 +74,24 @@ class loginpage : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // For testing: "admin@example.com" should use password "admin123"
+            // Sign in with Firebase Authentication
             auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                    // Check for temporary admin account
-                    if (email.equals("admin@example.com", ignoreCase = true)) {
-                        startActivity(Intent(this, admin_logs::class.java))
+                    // Check if email is verified
+                    val currentUser = auth.currentUser
+                    if (currentUser != null && currentUser.isEmailVerified) {
+                        Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
+                        // Check for temporary admin account
+                        if (email.equals("admin@example.com", ignoreCase = true)) {
+                            startActivity(Intent(this, admin_logs::class.java))
+                        } else {
+                            startActivity(Intent(this, landingpage::class.java))
+                        }
+                        finish() // Close login page
                     } else {
-                        startActivity(Intent(this, landingpage::class.java))
+                        Toast.makeText(this, "Please verify your email before logging in.", Toast.LENGTH_LONG).show()
+                        auth.signOut()
                     }
-                    finish() // Close login page
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, "Login failed: ${it.message}", Toast.LENGTH_SHORT).show()

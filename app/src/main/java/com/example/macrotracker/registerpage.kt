@@ -3,6 +3,7 @@ package com.example.macrotracker
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.view.MotionEvent
 import android.view.animation.AlphaAnimation
 import android.widget.Button
 import android.widget.EditText
@@ -39,6 +40,7 @@ class registerpage : AppCompatActivity() {
         val registerButton = findViewById<Button>(R.id.registerButton)
         val emailInput = findViewById<EditText>(R.id.emailInput)
         val passwordInput = findViewById<EditText>(R.id.passwordInput)
+        val backButton = findViewById<ImageView>(R.id.backButton)
 
         // Apply Fade In Animation to the Register Button
         val fadeIn = AlphaAnimation(0f, 1f).apply {
@@ -47,6 +49,33 @@ class registerpage : AppCompatActivity() {
             fillAfter = true
         }
         registerButton.startAnimation(fadeIn)
+
+        // Password Toggle Functionality: Toggle visibility on touch of drawable end.
+        var passwordVisible = false
+        passwordInput.setOnTouchListener { _, event ->
+            // DRAWABLE_END is at index 2 in the compound drawables array
+            val DRAWABLE_END = 2
+            if (event.action == MotionEvent.ACTION_UP) {
+                if (event.rawX >= (passwordInput.right - passwordInput.compoundDrawables[DRAWABLE_END].bounds.width())) {
+                    passwordVisible = !passwordVisible
+                    if (passwordVisible) {
+                        // Show password and update icon
+                        passwordInput.inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                                android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                        passwordInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_visibility_24, 0)
+                    } else {
+                        // Hide password and update icon
+                        passwordInput.inputType = android.text.InputType.TYPE_CLASS_TEXT or
+                                android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+                        passwordInput.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.baseline_visibility_off_24, 0)
+                    }
+                    // Keep cursor at the end of the text
+                    passwordInput.setSelection(passwordInput.text.length)
+                    return@setOnTouchListener true
+                }
+            }
+            false
+        }
 
         // Register Button Click
         registerButton.setOnClickListener {
@@ -75,19 +104,19 @@ class registerpage : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Use a default username ("User") which can be updated later
+            // Use a default username ("User") which can be updated later; also set "usernameUpdated" flag to false.
             registerUser("User", email, password)
         }
 
         // Back Button Click
-        findViewById<ImageView>(R.id.backButton).setOnClickListener {
+        backButton.setOnClickListener {
             startActivity(Intent(this, loginpage::class.java))
             finish()
         }
     }
 
     /**
-     * Register the user in Firebase Authentication and store their data in Firestore.
+     * Registers the user with Firebase Authentication and stores their data in Firestore.
      * Also sends a verification email after registration.
      */
     private fun registerUser(username: String, email: String, password: String) {
@@ -99,12 +128,16 @@ class registerpage : AppCompatActivity() {
                     // Send email verification
                     auth.currentUser?.sendEmailVerification()
                         ?.addOnSuccessListener {
-                            Toast.makeText(this, "Registration successful! Please check your email to verify your account.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                this,
+                                "Registration successful! Please check your email to verify your account.",
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                         ?.addOnFailureListener { e ->
                             Toast.makeText(this, "Failed to send verification email: ${e.message}", Toast.LENGTH_SHORT).show()
                         }
-                    // Optionally, sign the user out until they verify their email:
+                    // Sign the user out until they verify their email.
                     auth.signOut()
                     startActivity(Intent(this, loginpage::class.java))
                     finish()
@@ -116,12 +149,14 @@ class registerpage : AppCompatActivity() {
     }
 
     /**
-     * Save user data to Firestore under "users/{userID}" using merge so as not to overwrite subcollections.
+     * Saves user data to Firestore under "users/{userID}" using merge so as not to overwrite subcollections.
+     * Also sets the "usernameUpdated" flag to false.
      */
     private fun saveUserData(userId: String, username: String, email: String) {
         val userData = hashMapOf(
             "username" to username,
-            "email" to email
+            "email" to email,
+            "usernameUpdated" to false
         )
 
         val userRef = db.collection("users").document(userId)
@@ -135,12 +170,11 @@ class registerpage : AppCompatActivity() {
     }
 
     /**
-     * Setup empty subcollections for daily logs and user macros.
+     * Sets up empty subcollections for daily logs and user macros.
      */
     private fun setupUserCollections(userId: String) {
         val userRef = db.collection("users").document(userId)
 
-        // Initialize empty macros with default values
         val defaultMacros = hashMapOf(
             "calories" to 2000,
             "protein" to 150,
@@ -151,7 +185,7 @@ class registerpage : AppCompatActivity() {
         userRef.collection("userMacros").document("macros")
             .set(defaultMacros)
             .addOnSuccessListener {
-                // No additional action required here.
+                // No additional action required.
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Error initializing macros: ${e.message}", Toast.LENGTH_SHORT).show()

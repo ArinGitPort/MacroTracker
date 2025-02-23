@@ -62,7 +62,7 @@
                 android:id="@+id/donationTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Support MacroTracker!"
+                android:text="Support MacroSimplified!"
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>

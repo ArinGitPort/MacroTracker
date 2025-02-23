@@ -1,53 +1,44 @@
 package com.example.macrotracker
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Spinner
-import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.macrotracker.databinding.ActivityNutritionSettingsBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 
 class NutritionSettingsActivity : AppCompatActivity() {
 
-    private lateinit var heightInput: EditText
-    private lateinit var weightInput: EditText
-    private lateinit var goalWeightInput: EditText
-    private lateinit var ageInput: EditText
-    private lateinit var genderSpinner: Spinner
-    private lateinit var exerciseFrequencySpinner: Spinner
-    private lateinit var saveButton: Button
-    private lateinit var backButton: ImageView
-
+    private lateinit var binding: ActivityNutritionSettingsBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
 
+    // Default username value – if the username field is still this, we assume it’s not been updated.
+    private val defaultUsername = "User"
+    // SharedPreferences flag key to ensure we only prompt once.
+    private val PREFS_KEY = "app_prefs"
+    private val USERNAME_PROMPTED_KEY = "usernamePrompted"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_nutrition_settings)
+        binding = ActivityNutritionSettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Initialize Firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        // Get UI elements from XML
-        heightInput = findViewById(R.id.heightInput)
-        weightInput = findViewById(R.id.weightInput)
-        goalWeightInput = findViewById(R.id.goalWeightInput)
-        ageInput = findViewById(R.id.ageInput)
-        genderSpinner = findViewById(R.id.genderSpinner)
-        exerciseFrequencySpinner = findViewById(R.id.exerciseFrequencySpinner)
-        saveButton = findViewById(R.id.saveNutritionSettingsButton)
-        backButton = findViewById(R.id.backButton)
-
-        // Set up onFocus listeners for unit suffixes.
         setupUnitSuffixes()
 
-        // Get the current user's ID
         val userId = auth.currentUser?.uid
         if (userId != null) {
             fetchUserNutritionData(userId)
@@ -55,101 +46,81 @@ class NutritionSettingsActivity : AppCompatActivity() {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
         }
 
-        // Save settings when Save is clicked.
-        // This will compute and update the macros.
-        saveButton.setOnClickListener {
+        binding.saveNutritionSettingsButton.setOnClickListener {
             if (userId != null) {
                 saveUserNutritionData(userId)
             }
         }
 
-        // Back button navigates back to the UserProfileActivity
-        backButton.setOnClickListener {
+        binding.backButton.setOnClickListener {
             startActivity(Intent(this, userprofile::class.java))
             finish()
         }
     }
 
-    /**
-     * Set focus change listeners on input fields so that when they lose focus,
-     * a unit suffix is appended, and when they gain focus, the suffix is removed.
-     */
     private fun setupUnitSuffixes() {
-        // For heightInput, append " cm"
-        heightInput.setOnFocusChangeListener { _, hasFocus ->
+        binding.heightInput.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                val text = heightInput.text.toString()
+                val text = binding.heightInput.text.toString()
                 if (text.isNotEmpty() && !text.contains(" cm")) {
-                    heightInput.setText("$text cm")
+                    binding.heightInput.setText("$text cm")
                 }
             } else {
-                val text = heightInput.text.toString().replace(" cm", "")
-                heightInput.setText(text)
+                binding.heightInput.setText(binding.heightInput.text.toString().replace(" cm", ""))
             }
         }
-        // For weightInput, append " kg"
-        weightInput.setOnFocusChangeListener { _, hasFocus ->
+        binding.weightInput.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                val text = weightInput.text.toString()
+                val text = binding.weightInput.text.toString()
                 if (text.isNotEmpty() && !text.contains(" kg")) {
-                    weightInput.setText("$text kg")
+                    binding.weightInput.setText("$text kg")
                 }
             } else {
-                val text = weightInput.text.toString().replace(" kg", "")
-                weightInput.setText(text)
+                binding.weightInput.setText(binding.weightInput.text.toString().replace(" kg", ""))
             }
         }
-        // For goalWeightInput, append " kg"
-        goalWeightInput.setOnFocusChangeListener { _, hasFocus ->
+        binding.goalWeightInput.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                val text = goalWeightInput.text.toString()
+                val text = binding.goalWeightInput.text.toString()
                 if (text.isNotEmpty() && !text.contains(" kg")) {
-                    goalWeightInput.setText("$text kg")
+                    binding.goalWeightInput.setText("$text kg")
                 }
             } else {
-                val text = goalWeightInput.text.toString().replace(" kg", "")
-                goalWeightInput.setText(text)
+                binding.goalWeightInput.setText(binding.goalWeightInput.text.toString().replace(" kg", ""))
             }
         }
-        // For ageInput, append " years old"
-        ageInput.setOnFocusChangeListener { _, hasFocus ->
+        binding.ageInput.setOnFocusChangeListener { _, hasFocus ->
             if (!hasFocus) {
-                val text = ageInput.text.toString()
+                val text = binding.ageInput.text.toString()
                 if (text.isNotEmpty() && !text.contains(" years old")) {
-                    ageInput.setText("$text years old")
+                    binding.ageInput.setText("$text years old")
                 }
             } else {
-                val text = ageInput.text.toString().replace(" years old", "")
-                ageInput.setText(text)
+                binding.ageInput.setText(binding.ageInput.text.toString().replace(" years old", ""))
             }
         }
     }
 
-    /**
-     * Fetches existing nutrition settings for the given user and populates the fields.
-     * This method loads the saved data (including age) so the user can see their current settings.
-     */
     private fun fetchUserNutritionData(userId: String) {
         db.collection("users").document(userId).get()
             .addOnSuccessListener { document ->
                 if (document.exists()) {
-                    heightInput.setText(document.getString("height"))
-                    weightInput.setText(document.getString("weight"))
-                    goalWeightInput.setText(document.getString("goalWeight"))
-                    ageInput.setText(document.getString("age"))
+                    binding.heightInput.setText(document.getString("height"))
+                    binding.weightInput.setText(document.getString("weight"))
+                    binding.goalWeightInput.setText(document.getString("goalWeight"))
+                    binding.ageInput.setText(document.getString("age"))
                     val gender = document.getString("gender")
                     val genderOptions = resources.getStringArray(R.array.gender_options)
                     val genderIndex = genderOptions.indexOf(gender)
                     if (genderIndex >= 0) {
-                        genderSpinner.setSelection(genderIndex)
+                        binding.genderSpinner.setSelection(genderIndex)
                     }
                     val exercise = document.getString("exerciseFrequency")
                     val exerciseOptions = resources.getStringArray(R.array.activity_levels)
                     val exerciseIndex = exerciseOptions.indexOf(exercise)
                     if (exerciseIndex >= 0) {
-                        exerciseFrequencySpinner.setSelection(exerciseIndex)
+                        binding.exerciseFrequencySpinner.setSelection(exerciseIndex)
                     }
-                    // Do not auto compute macros here if user manually set macros elsewhere.
                 } else {
                     Log.d("NutritionSettings", "No user data found. Likely first login.")
                 }
@@ -160,32 +131,30 @@ class NutritionSettingsActivity : AppCompatActivity() {
             }
     }
 
-    /**
-     * Saves the nutrition settings under users/{userId} and then computes macros.
-     * Before saving, it removes the unit suffixes.
-     */
     private fun saveUserNutritionData(userId: String) {
         // Remove unit suffixes before saving
-        val heightValue = heightInput.text.toString().replace(" cm", "")
-        val weightValue = weightInput.text.toString().replace(" kg", "")
-        val goalWeightValue = goalWeightInput.text.toString().replace(" kg", "")
-        val ageValue = ageInput.text.toString().replace(" years old", "")
+        val heightValue = binding.heightInput.text.toString().replace(" cm", "")
+        val weightValue = binding.weightInput.text.toString().replace(" kg", "")
+        val goalWeightValue = binding.goalWeightInput.text.toString().replace(" kg", "")
+        val ageValue = binding.ageInput.text.toString().replace(" years old", "")
 
         val nutritionData = hashMapOf(
             "height" to heightValue,
             "weight" to weightValue,
             "goalWeight" to goalWeightValue,
             "age" to ageValue,
-            "gender" to genderSpinner.selectedItem.toString(),
-            "exerciseFrequency" to exerciseFrequencySpinner.selectedItem.toString()
+            "gender" to binding.genderSpinner.selectedItem.toString(),
+            "exerciseFrequency" to binding.exerciseFrequencySpinner.selectedItem.toString()
         )
 
+        // Save (merge) the nutrition settings.
         db.collection("users").document(userId)
-            .set(nutritionData)
+            .set(nutritionData, SetOptions.merge())
             .addOnSuccessListener {
                 Toast.makeText(this, "Nutrition settings saved!", Toast.LENGTH_SHORT).show()
-                // Compute macros only when the user clicks Save.
                 computeUserMacros(userId)
+                // After saving, check if the username is still default or not updated.
+                checkAndPromptEditUsername(userId)
             }
             .addOnFailureListener { e ->
                 Toast.makeText(this, "Failed to save settings", Toast.LENGTH_SHORT).show()
@@ -193,19 +162,13 @@ class NutritionSettingsActivity : AppCompatActivity() {
             }
     }
 
-    /**
-     * Computes the user's macro goals (calories, protein, carbs, fats) using the Mifflin-St Jeor Equation
-     * and target percentages (approx. 32% protein, 42% carbs, 26% fat), then saves the result under
-     * users/{userId}/userMacros/macros.
-     * This uses the user's age input.
-     */
     private fun computeUserMacros(userId: String) {
-        val height = heightInput.text.toString().replace(" cm", "").toDoubleOrNull() ?: 0.0
-        val weight = weightInput.text.toString().replace(" kg", "").toDoubleOrNull() ?: 0.0
-        val age = ageInput.text.toString().replace(" years old", "").toIntOrNull() ?: 25
+        val height = binding.heightInput.text.toString().replace(" cm", "").toDoubleOrNull() ?: 0.0
+        val weight = binding.weightInput.text.toString().replace(" kg", "").toDoubleOrNull() ?: 0.0
+        val age = binding.ageInput.text.toString().replace(" years old", "").toIntOrNull() ?: 25
 
-        val gender = genderSpinner.selectedItem.toString()
-        val exerciseLevel = exerciseFrequencySpinner.selectedItem.toString()
+        val gender = binding.genderSpinner.selectedItem.toString()
+        val exerciseLevel = binding.exerciseFrequencySpinner.selectedItem.toString()
 
         // Calculate BMR using the Mifflin-St Jeor Equation.
         val bmr = if (gender.equals("Male", ignoreCase = true)) {
@@ -224,13 +187,9 @@ class NutritionSettingsActivity : AppCompatActivity() {
         }
 
         val dailyCalories = (bmr * activityFactor).toInt()
-
-        // Macro calculation using target percentages:
         val computedProtein = (dailyCalories * 0.32 / 4).toInt()
         val computedCarbs = (dailyCalories * 0.42 / 4).toInt()
         val computedFats = (dailyCalories * 0.26 / 9).toInt()
-
-        // Recalculate total calories from macros to ensure consistency
         val totalCalories = computedProtein * 4 + computedCarbs * 4 + computedFats * 9
 
         val updatedMacros = hashMapOf(
@@ -248,6 +207,81 @@ class NutritionSettingsActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Log.e("NutritionSettings", "Error updating macros", e)
+            }
+    }
+
+    /**
+     * Checks the user's current username from Firestore.
+     * If it is empty, equals the default value, or equals the user's UID, then prompt for username.
+     * This prompt is only shown once using a SharedPreferences flag.
+     */
+    private fun checkAndPromptEditUsername(userId: String) {
+        val prefs = getSharedPreferences(PREFS_KEY, Context.MODE_PRIVATE)
+        val alreadyPrompted = prefs.getBoolean(USERNAME_PROMPTED_KEY, false)
+        if (!alreadyPrompted) {
+            db.collection("users").document(userId).get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val username = document.getString("username")
+                        if (username.isNullOrEmpty() || username == defaultUsername || username == auth.currentUser?.uid) {
+                            showEditUsernameDialog()
+                            prefs.edit().putBoolean(USERNAME_PROMPTED_KEY, true).apply()
+                        }
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.e("NutritionSettings", "Error checking username", e)
+                }
+        }
+    }
+
+    /**
+     * Displays a dialog to allow the user to edit their username.
+     * The dialog layout is defined in edit_username_dialog.xml.
+     */
+    private fun showEditUsernameDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.edit_username_dialog, null)
+        val usernameInput = dialogView.findViewById<EditText>(R.id.editUsernameInput)
+        usernameInput.hint = "Enter your username"
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("Set Username")
+            .setView(dialogView)
+            .create()
+
+        val updateButton = dialogView.findViewById<Button>(R.id.updateButton)
+        val closeButton = dialogView.findViewById<Button>(R.id.closeButton)
+
+        updateButton.setOnClickListener {
+            val newUsername = usernameInput.text.toString().trim()
+            if (newUsername.isNotEmpty()) {
+                updateUsername(newUsername)
+            } else {
+                Toast.makeText(this, "Username cannot be empty", Toast.LENGTH_SHORT).show()
+            }
+            alertDialog.dismiss()
+        }
+
+        closeButton.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        alertDialog.show()
+    }
+
+    /**
+     * Updates the username in Firestore and sets the "usernameUpdated" flag to true.
+     */
+    private fun updateUsername(newUsername: String) {
+        val uid = auth.currentUser?.uid ?: return
+        db.collection("users").document(uid)
+            .update(mapOf("username" to newUsername, "usernameUpdated" to true))
+            .addOnSuccessListener {
+                Toast.makeText(this, "Username updated", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Failed to update username", Toast.LENGTH_SHORT).show()
             }
     }
 }
