@@ -77,17 +77,16 @@ class loginpage : AppCompatActivity() {
             // Sign in with Firebase Authentication
             auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
-                    // Check if email is verified
                     val currentUser = auth.currentUser
-                    if (currentUser != null && currentUser.isEmailVerified) {
+                    // Allow admin account even if not verified
+                    if (email.equals("admin@example.com", ignoreCase = true) || (currentUser != null && currentUser.isEmailVerified)) {
                         Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                        // Check for temporary admin account
                         if (email.equals("admin@example.com", ignoreCase = true)) {
                             startActivity(Intent(this, admin_logs::class.java))
                         } else {
                             startActivity(Intent(this, landingpage::class.java))
                         }
-                        finish() // Close login page
+                        finish()
                     } else {
                         Toast.makeText(this, "Please verify your email before logging in.", Toast.LENGTH_LONG).show()
                         auth.signOut()
@@ -96,6 +95,7 @@ class loginpage : AppCompatActivity() {
                 .addOnFailureListener {
                     Toast.makeText(this, "Login failed: ${it.message}", Toast.LENGTH_SHORT).show()
                 }
+
         }
 
         // Register TextView: Navigate to Register Page
